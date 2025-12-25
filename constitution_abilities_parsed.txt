@@ -1,0 +1,118 @@
+// Constitution Talents - Formatted for talents.js
+// Copy and paste the abilities objects into the corresponding talent entries
+
+// ============================================================================
+// GARDENING
+// ============================================================================
+abilities: {
+  1: [],
+  2: [],
+  3: [
+    { name: "Discern Rare Plant", description: "After a lengthy time expenditure, your character easily recognises rare plants and how to utilize them." },
+    { name: "Medicine Talent Point", description: "An extra Talent Point in the Medicine subcategory under Scrutiny." }
+  ]
+}
+
+// ============================================================================
+// SPORTS
+// ============================================================================
+abilities: {
+  1: [],
+  2: [
+    { name: "Disengage Skill", description: "Knows the Disengage Skill" }
+  ],
+  3: [
+    { name: "Reknown Sportsman", description: "Renowned multi-kingdom sportsperson with celebrity status (usable in backstory), automatic Magnate System access (pending application)" },
+    { name: "Evasive Footwork Skill", description: "Learns Evasive Footwork Skill" }
+  ]
+}
+
+// ============================================================================
+// ANIMAL HUSBANDRY
+// ============================================================================
+abilities: {
+  1: [
+    { name: "Animal Companion", description: "Companion obeys non-combat commands, has 6 health, respawns after 24 hours if killed (common animal, dog-sized maximum)" }
+  ],
+  2: [
+    { name: "Calm Wild Animal", description: "Character can calm animals with d20 roll (12+ succeeds), forcing passivity and combat exit (once per scenario)" }
+  ],
+  3: [
+    { name: "Call Wild Animal", description: "Ferocious combat animal with character's constitution, 8 Strength/8 Dexterity, deals 1d6 damage" },
+    { name: "Heal Animal", description: "Character heals creatures to maximum HP once daily" },
+    { name: "Exotic Animal Owner", description: "Exotic animal ownership grants Magnate System event access (not system itself)" }
+  ]
+}
+
+// ============================================================================
+// WAYFARER
+// ============================================================================
+abilities: {
+  1: [
+    { name: "Traverse Rough Terrain", description: "Terrain traversal and quiet movement mastery. Character tracks easily, finds way in progressions/newslets" },
+    { name: "Stumble onto Map", description: "Small treasure map discovery chance" }
+  ],
+  2: [
+    { name: "Stumble onto Map", description: "Medium treasure map discovery chance" }
+  ],
+  3: [
+    { name: "Master Tracker", description: "Master wayfarer with reliable tracking/navigation in progressions" },
+    { name: "Traveled Guide", description: "Character guides groups" },
+    { name: "Cartographer", description: "Acts as cartographer" },
+    { name: "Perception Talent Point", description: "Bonus Talent Point in Perception subcategory (capped at 2 total)" },
+    { name: "Stumble onto Map", description: "High treasure map discovery chance" }
+  ]
+}
+
+// ============================================================================
+// SMITHING
+// ============================================================================
+abilities: {
+  1: [
+    { name: "Forge Non-Tech Weapons", description: "Character forges non-tech weapons for self/others" }
+  ],
+  2: [
+    { name: "Known Smithy", description: "Well-known blacksmith status (backstory-usable)" },
+    { name: "Identify and Utilize Metals", description: "Character identifies metals, understands machine utilization" },
+    { name: "Engineering Talent Point", description: "Bonus Talent Point in Engineering subcategory under Dexterity (respects 3-point limit)" }
+  ],
+  3: [
+    { name: "Improvised Weapon", description: "Character wields Forge Hammer as weapon (third weapon if two already specified). Benefit: +4 to Attack Rolls, deals 1d8 damage on success" },
+    { name: "Known Smithy", description: "Smithing business grants automatic Magnate System access (pending application)" }
+  ]
+}
+
+// ============================================================================
+// THE ARTS
+// ============================================================================
+abilities: {
+  1: [],
+  2: [
+    { name: "Academics Talent Point", description: "Bonus Talent Point in Academics (free path selection, respects 3-point limit)" }
+  ],
+  3: [
+    { name: "World Famous Artist", description: "Character becomes famous for artistic discipline (backstory-usable). Easier dignitary access abroad in progressions/newslets for potential currency rewards" },
+    { name: "High Society Access", description: "Automatic High Society event access without Magnate membership" }
+  ]
+}
+
+// ============================================================================
+// COOKING
+// ============================================================================
+abilities: {
+  1: [
+    { name: "Create Alcohol", description: "Character brews beer/cider, creates wine/spirits, prepares above-average meals, develops recipes for factory production" },
+    { name: "Perception Talent Point", description: "Bonus Talent Point in Perception subcategory under Scrutiny (respects 3-point limit)" }
+  ],
+  2: [
+    { name: "World Famous Chef", description: "Renowned chef with town's best restaurant. Gains name recognition for bottled/peddled goods" },
+    { name: "Medicine/Alchemy Talent Point", description: "Bonus Talent Point in Medicine/Alchemy subcategory under Scrutiny (respects 3-point limit)" },
+    { name: "Trade Access Foreign Food", description: "Character trades with foreign merchants for Slimefun goods (Discord ticket required)" },
+    { name: "Listen for World Affairs Major", description: "Participates in progressions/dignitaries with medium information-gathering chance" }
+  ],
+  3: [
+    { name: "World Famous Chef", description: "Character sells products abroad for fame, Character gains international fame (backstory-usable)" },
+    { name: "Trade Access Foreign Food", description: "Exports consumable Slimefun products for substantial currency (Discord ticket required)" },
+    { name: "Listen for World Affairs Major", description: "Attends dignitaries/foreign galas in progressions with high information-gathering chance" }
+  ]
+}
