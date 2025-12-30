@@ -949,6 +949,9 @@ export const CURSE_SKILLS = [
     name: 'Aurumvitae',
     tier: 0,
     cost: 3,
+    subclass: '',
+    subclassOptions: ['Phantomize', 'Revelance', 'Mischivra', 'Shardance'],
+    subclassPrompt: 'Select Taint Line',
     abilities: {
   1: [
     { name: "Extended Lifespan", description: "Those cursed with Aurumvitae experience an elongated existence beyond their race's normal lifespan", link: "https://gearsofgaludonwiki.com/index.php/Aurumvitae" },

@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Plus, Minus, AlertCircle, CheckCircle, BookOpen, User, Skull, Sword, Wind, Settings, Cog, Sparkles, ChevronUp, ChevronDown } from 'lucide-react';
 import { INITIAL_SKILLS, TIER_BONUSES, BASE_POINTS } from './data/talents';
 
@@ -462,11 +463,32 @@ const SkillRow = React.memo(({ skill, category, updateSkill, updateSkillName, up
 
   const parts = getEditableParts(skill.name);
   const [localSubject, setLocalSubject] = React.useState(parts.subject);
+  const [showSubclass, setShowSubclass] = React.useState(skill.tier > 0);
+  const [isAnimatingOut, setIsAnimatingOut] = React.useState(false);
 
   // Update local state when skill.name changes from external source
   React.useEffect(() => {
     setLocalSubject(parts.subject);
   }, [skill.name]);
+
+  // Handle subclass wrapper show/hide with animation
+  React.useEffect(() => {
+    if (isCurse && skill.subclassOptions) {
+      if (skill.tier > 0) {
+        // Show it immediately (animate in)
+        setIsAnimatingOut(false);
+        setShowSubclass(true);
+      } else if (skill.tier === 0) {
+        // Hide it (animate out)
+        setIsAnimatingOut(true);
+        const timer = setTimeout(() => {
+          setShowSubclass(false);
+          setIsAnimatingOut(false);
+        }, 400); // Match animation duration
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [skill.tier, isCurse, skill.subclassOptions]);
 
   const handleSubjectChange = (e) => {
     setLocalSubject(e.target.value);
@@ -555,8 +577,8 @@ const SkillRow = React.memo(({ skill, category, updateSkill, updateSkillName, up
           )}
           {cost > 1 && <span className="skill-cost">({cost} pts)</span>}
         </div>
-        {isCurse && skill.subclassOptions && skill.tier > 0 && (
-          <div className="skill-subclass-wrapper">
+        {isCurse && skill.subclassOptions && showSubclass && (
+          <div className={`skill-subclass-wrapper ${isAnimatingOut ? 'animating-out' : ''}`}>
             <span className="skill-subclass-arrow">└</span>
             <select
               value={skill.subclass}
@@ -632,15 +654,101 @@ const SkillRow = React.memo(({ skill, category, updateSkill, updateSkillName, up
 });
 
 // ============================================================================
+// NAVIGATION COMPONENT
+// ============================================================================
+
+const Navigation = ({ stats, extraPoints, scrollToSection }) => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  return (
+    <nav className="unified-menu">
+      <div className="unified-menu-content">
+        <Link
+          to="/"
+          className={`unified-menu-tab ${currentPath === '/' ? 'active' : ''}`}
+          aria-label="View character sheet"
+          aria-current={currentPath === '/' ? 'page' : undefined}
+        >
+          CHARACTER SHEET
+        </Link>
+        <Link
+          to="/reference"
+          className={`unified-menu-tab ${currentPath === '/reference' ? 'active' : ''}`}
+          aria-label="View reference sheet"
+          aria-current={currentPath === '/reference' ? 'page' : undefined}
+        >
+          REFERENCE SHEET
+        </Link>
+
+        {/* Section navigation - only visible on character tab */}
+        {currentPath === '/' && (
+          <>
+            <div className="unified-menu-divider"></div>
+            <button
+              onClick={() => scrollToSection('section-character-info')}
+              className="unified-menu-btn"
+              aria-label="Jump to Character Information section"
+            >
+              <BookOpen size={18} />
+              INFO
+            </button>
+            {Object.keys(ATTRIBUTES).map(key => {
+              const config = ATTRIBUTES[key];
+              const IconComponent = {
+                'User': User,
+                'Sword': Sword,
+                'Wind': Wind,
+                'BookOpen': BookOpen,
+                'Sparkles': Sparkles,
+                'Skull': Skull
+              }[config.icon];
+
+              return (
+                <button
+                  key={key}
+                  onClick={() => scrollToSection(config.sectionId)}
+                  className="unified-menu-btn"
+                  aria-label={`Jump to ${config.label} section`}
+                >
+                  <IconComponent size={18} />
+                  {config.abbreviation}
+                </button>
+              );
+            })}
+            <div className="unified-menu-divider"></div>
+            <div className="unified-menu-points">
+              <span className="unified-points-label">Points:</span>
+              <span className={`unified-points-value ${stats.remaining < 0 ? 'negative' : ''}`}>
+                {stats.remaining}/{BASE_POINTS + extraPoints}
+              </span>
+            </div>
+          </>
+        )}
+
+        <div className="unified-menu-divider"></div>
+        <Link
+          to="/settings"
+          className={`unified-menu-tab ${currentPath === '/settings' ? 'active' : ''}`}
+          aria-label="View settings"
+          aria-current={currentPath === '/settings' ? 'page' : undefined}
+        >
+          <Settings size={18} />
+        </Link>
+      </div>
+    </nav>
+  );
+};
+
+// ============================================================================
 // MAIN COMPONENT
 // ============================================================================
 
-export default function GaludonCalculator() {
+function GaludonCalculator() {
   const [skills, setSkills] = useState(INITIAL_SKILLS);
   const [extraPoints, setExtraPoints] = useState(0);
   const [virtuoso, setVirtuoso] = useState(false);
   const [characterName, setCharacterName] = useState('');
-  const [activeTab, setActiveTab] = useState('character');
   const [primaryWeapon, setPrimaryWeapon] = useState('');
   const [secondaryWeapon, setSecondaryWeapon] = useState('');
   const [wieldingFinesse, setWieldingFinesse] = useState(false);
@@ -3593,7 +3701,7 @@ export default function GaludonCalculator() {
         .skill-name-container {
           display: flex;
           flex-direction: column;
-          gap: 0.25rem;
+          gap: 0.05rem;
         }
 
         .skill-name {
@@ -3633,31 +3741,66 @@ export default function GaludonCalculator() {
           display: flex;
           align-items: center;
           gap: 0.5rem;
+          position: absolute;
+          bottom: 0;
+          left: 1rem;
+          transform: translateY(50%);
+          z-index: 5;
+          animation: slideUpFadeIn 0.4s ease-out;
+        }
+
+        @keyframes slideUpFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(70%);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(50%);
+          }
+        }
+
+        @keyframes slideDownFadeOut {
+          from {
+            opacity: 1;
+            transform: translateY(50%);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(70%);
+          }
+        }
+
+        .skill-subclass-wrapper.animating-out {
+          animation: slideDownFadeOut 0.4s ease-out forwards;
         }
 
         .skill-subclass-arrow {
           color: #ab854b;
           font-size: 1.2rem;
           line-height: 1;
+          transform: translateY(-5px) translateX(5px);
         }
 
         .skill-subclass-select {
-          background: linear-gradient(135deg, rgba(26, 20, 16, 0.9), rgba(45, 37, 32, 0.8));
+          background: linear-gradient(135deg, rgb(26, 20, 16), rgb(45, 37, 32));
           border: 2px solid #c8a96b;
           border-radius: 4px;
-          padding: 0.4rem 0.6rem;
+          padding: 0.15rem 0.4rem;
           color: #d4c5b0;
           font-family: 'Rajdhani', sans-serif;
           font-weight: 600;
           font-size: 0.85rem;
+          line-height: 1.2;
           cursor: pointer;
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
           transition: all 0.2s ease;
+          transform: translateY(-4px);
         }
 
         .skill-subclass-select:hover {
           border-color: #d4b87a;
-          background: linear-gradient(135deg, rgba(35, 28, 22, 0.9), rgba(55, 45, 38, 0.8));
+          background: linear-gradient(135deg, rgb(35, 28, 22), rgb(55, 45, 38));
         }
 
         .skill-subclass-select:focus {
@@ -5292,83 +5435,13 @@ export default function GaludonCalculator() {
         </header>
 
         {/* Unified Menu - Consolidated for all tabs */}
-        <nav className="unified-menu">
-          <div className="unified-menu-content">
-            <button
-              className={`unified-menu-tab ${activeTab === 'character' ? 'active' : ''}`}
-              onClick={() => setActiveTab('character')}
-              aria-label="View character sheet"
-              aria-current={activeTab === 'character' ? 'page' : undefined}
-            >
-              CHARACTER SHEET
-            </button>
-            <button
-              className={`unified-menu-tab ${activeTab === 'reference' ? 'active' : ''}`}
-              onClick={() => setActiveTab('reference')}
-              aria-label="View reference sheet"
-              aria-current={activeTab === 'reference' ? 'page' : undefined}
-            >
-              REFERENCE SHEET
-            </button>
+        <Navigation stats={stats} extraPoints={extraPoints} scrollToSection={scrollToSection} />
 
-            {/* Section navigation - only visible on character tab */}
-            {activeTab === 'character' && (
-              <>
-                <div className="unified-menu-divider"></div>
-                <button
-                  onClick={() => scrollToSection('section-character-info')}
-                  className="unified-menu-btn"
-                  aria-label="Jump to Character Information section"
-                >
-                  <BookOpen size={18} />
-                  INFO
-                </button>
-                {Object.keys(ATTRIBUTES).map(key => {
-                  const config = ATTRIBUTES[key];
-                  const IconComponent = {
-                    'User': User,
-                    'Sword': Sword,
-                    'Wind': Wind,
-                    'BookOpen': BookOpen,
-                    'Sparkles': Sparkles,
-                    'Skull': Skull
-                  }[config.icon];
-
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => scrollToSection(config.sectionId)}
-                      className="unified-menu-btn"
-                      aria-label={`Jump to ${config.label} section`}
-                    >
-                      <IconComponent size={18} />
-                      {config.abbreviation}
-                    </button>
-                  );
-                })}
-                <div className="unified-menu-divider"></div>
-                <div className="unified-menu-points">
-                  <span className="unified-points-label">Points:</span>
-                  <span className={`unified-points-value ${stats.remaining < 0 ? 'negative' : ''}`}>
-                    {stats.remaining}/{BASE_POINTS + extraPoints}
-                  </span>
-                </div>
-              </>
-            )}
-
-            <div className="unified-menu-divider"></div>
-            <button
-              className={`unified-menu-tab ${activeTab === 'settings' ? 'active' : ''}`}
-              onClick={() => setActiveTab('settings')}
-              aria-label="View settings"
-              aria-current={activeTab === 'settings' ? 'page' : undefined}
-            >
-                <Settings size={18} />
-            </button>
-          </div>
-        </nav>
-
-        {activeTab === 'character' ? CharacterSheet : activeTab === 'reference' ? ReferenceSheet : SettingsSheet}
+        <Routes>
+          <Route path="/" element={CharacterSheet} />
+          <Route path="/reference" element={ReferenceSheet} />
+          <Route path="/settings" element={SettingsSheet} />
+        </Routes>
 
         {/* Reset Success Modal */}
         {showResetSuccess && (
@@ -5391,5 +5464,14 @@ export default function GaludonCalculator() {
         )}
       </div>
     </div>
+  );
+}
+
+// Wrap with BrowserRouter
+export default function App() {
+  return (
+    <BrowserRouter basename="/Galudon-Character-Calculator">
+      <GaludonCalculator />
+    </BrowserRouter>
   );
 }
