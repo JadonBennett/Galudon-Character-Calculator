@@ -323,6 +323,13 @@ const SkillAbilityCard = ({ ability, talentName, tier, isExpanded, onToggle }) =
       {isExpanded && (
         <div className="skill-ability-content">
           <div className="skill-ability-description">{ability.description}</div>
+          {ability.link && (
+            <div className="skill-ability-source-link">
+              <a href={ability.link} target="_blank" rel="noopener noreferrer">
+                Source
+              </a>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -1501,11 +1508,12 @@ export default function GaludonCalculator() {
                 );
               })()}
 
-              {/* Talents - Constitution and Dexterity */}
+              {/* Talents - Constitution, Dexterity, and Scrutiny */}
               {(() => {
                 const constitutionTalents = skills.constitution.filter(s => s.tier > 0);
                 const dexterityTalents = skills.dexterity.filter(s => s.tier > 0);
-                const talents = [...constitutionTalents, ...dexterityTalents];
+                const scrutinyTalents = skills.scrutiny.filter(s => s.tier > 0);
+                const talents = [...constitutionTalents, ...dexterityTalents, ...scrutinyTalents];
 
                 return talents.length > 0 && (
                   <CollapsibleSection
@@ -1527,7 +1535,8 @@ export default function GaludonCalculator() {
               {(() => {
                 const constitutionTalents = skills.constitution.filter(s => s.tier > 0);
                 const dexterityTalents = skills.dexterity.filter(s => s.tier > 0);
-                const allTalents = [...constitutionTalents, ...dexterityTalents];
+                const scrutinyTalents = skills.scrutiny.filter(s => s.tier > 0);
+                const allTalents = [...constitutionTalents, ...dexterityTalents, ...scrutinyTalents];
 
                 // Aggregate all abilities from all talents
                 const allSkillAbilities = [];
@@ -1571,38 +1580,92 @@ export default function GaludonCalculator() {
                 );
               })()}
 
-              {/* Magic Grimoire - Mystics */}
+              {/* Grimoire - Mystic Abilities */}
               {(() => {
-                const grimoire = skills.mystics.filter(s => s.tier > 0);
-                return grimoire.length > 0 && (
+                const mysticTalents = skills.mystics.filter(s => s.tier > 0);
+
+                // Aggregate all abilities from mystic talents
+                const grimoireAbilities = [];
+                mysticTalents.forEach(talent => {
+                  for (let tier = 1; tier <= talent.tier; tier++) {
+                    const abilities = talent.abilities?.[tier] || [];
+                    abilities.forEach((ability, idx) => {
+                      // Only include abilities with non-empty names
+                      if (ability.name && ability.name.trim() !== '') {
+                        grimoireAbilities.push({
+                          id: `${talent.id}-${tier}-${idx}`,
+                          ability,
+                          talentName: talent.name,
+                          tier: tier
+                        });
+                      }
+                    });
+                  }
+                });
+
+                return grimoireAbilities.length > 0 && (
                   <CollapsibleSection
-                    title="✨ Magic Grimoire"
-                    isCollapsed={collapsedSections.magicGrimoire}
-                    onToggle={() => toggleSection('magicGrimoire')}
-                    count={grimoire.length}
+                    title="📖 Grimoire"
+                    isCollapsed={collapsedSections.grimoire}
+                    onToggle={() => toggleSection('grimoire')}
+                    count={grimoireAbilities.length}
                   >
                     <div className="talents-list">
-                      {grimoire.map(skill => (
-                        <TalentCard key={skill.id} skill={skill} />
+                      {grimoireAbilities.map(({ id, ability, talentName, tier }) => (
+                        <SkillAbilityCard
+                          key={id}
+                          ability={ability}
+                          talentName={talentName}
+                          tier={tier}
+                          isExpanded={!!expandedSkills[id]}
+                          onToggle={() => toggleSkill(id)}
+                        />
                       ))}
                     </div>
                   </CollapsibleSection>
                 );
               })()}
 
-              {/* Cursed Traits - Curses */}
+              {/* Cursed Abilities */}
               {(() => {
-                const cursed = skills.curses.filter(s => s.tier > 0);
-                return cursed.length > 0 && (
+                const cursedTalents = skills.curses.filter(s => s.tier > 0);
+
+                // Aggregate all abilities from curse talents
+                const cursedAbilities = [];
+                cursedTalents.forEach(talent => {
+                  for (let tier = 1; tier <= talent.tier; tier++) {
+                    const abilities = talent.abilities?.[tier] || [];
+                    abilities.forEach((ability, idx) => {
+                      // Only include abilities with non-empty names
+                      if (ability.name && ability.name.trim() !== '') {
+                        cursedAbilities.push({
+                          id: `${talent.id}-${tier}-${idx}`,
+                          ability,
+                          talentName: talent.name,
+                          tier: tier
+                        });
+                      }
+                    });
+                  }
+                });
+
+                return cursedAbilities.length > 0 && (
                   <CollapsibleSection
-                    title="💀 Cursed Traits"
-                    isCollapsed={collapsedSections.cursedTraits}
-                    onToggle={() => toggleSection('cursedTraits')}
-                    count={cursed.length}
+                    title="💀 Cursed Abilities"
+                    isCollapsed={collapsedSections.cursedAbilities}
+                    onToggle={() => toggleSection('cursedAbilities')}
+                    count={cursedAbilities.length}
                   >
                     <div className="talents-list">
-                      {cursed.map(skill => (
-                        <TalentCard key={skill.id} skill={skill} />
+                      {cursedAbilities.map(({ id, ability, talentName, tier }) => (
+                        <SkillAbilityCard
+                          key={id}
+                          ability={ability}
+                          talentName={talentName}
+                          tier={tier}
+                          isExpanded={!!expandedSkills[id]}
+                          onToggle={() => toggleSkill(id)}
+                        />
                       ))}
                     </div>
                   </CollapsibleSection>
@@ -1614,13 +1677,6 @@ export default function GaludonCalculator() {
           <div className="ref-warning">
             <AlertCircle size={20} />
             <span>Multiple Tier 3 talents require Virtuoso permission</span>
-          </div>
-        )}
-
-        {stats.remaining === 0 && !stats.hasError && activeSkills.length > 0 && (
-          <div className="ref-success">
-            <CheckCircle size={20} />
-            <span>Character build complete and valid!</span>
           </div>
         )}
 
@@ -3549,7 +3605,7 @@ export default function GaludonCalculator() {
           flex-direction: row;
           align-items: center;
           gap: 0.5rem;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.2px;
           text-align: left;
         }
 
@@ -3683,7 +3739,7 @@ export default function GaludonCalculator() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 0.1rem;
+          gap: 0.05rem;
           min-width: 55px;
           padding: 0.4rem 0.5rem;
           background:
@@ -3859,12 +3915,13 @@ export default function GaludonCalculator() {
 
         .stat-card:hover {
           transform: translateY(-8px) scale(1.02);
-          box-shadow: 
+          box-shadow:
             0 16px 40px rgba(200, 169, 107, 0.5),
             inset 0 0 30px rgba(0, 0, 0, 0.5),
             inset 0 3px 6px rgba(244, 228, 200, 0.3),
             0 0 40px rgba(200, 169, 107, 0.3);
           border-color: #d4b87a;
+          z-index: 10;
         }
 
         .stat-label {
@@ -4882,6 +4939,28 @@ export default function GaludonCalculator() {
           font-size: 0.95rem;
           color: #e8dcc8;
           line-height: 1.4;
+        }
+
+        .skill-ability-source-link {
+          margin-top: 1rem;
+          padding-top: 0.75rem;
+          border-top: 1px solid rgba(139, 111, 63, 0.2);
+          text-align: right;
+        }
+
+        .skill-ability-source-link a {
+          font-family: 'Orbitron', monospace;
+          font-size: 0.85rem;
+          color: #c9a961;
+          text-decoration: none;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          transition: all 0.3s ease;
+        }
+
+        .skill-ability-source-link a:hover {
+          color: #f4e4c1;
+          text-shadow: 0 0 8px rgba(201, 169, 97, 0.6);
         }
 
         .ref-warning, .ref-success {
