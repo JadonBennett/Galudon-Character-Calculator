@@ -1,0 +1,77 @@
+/* CSS Custom Properties - Galudon Character Calculator */
+
+:root {
+  /* Color Variables */
+  --color-gold-primary: #c8a96b;
+  --color-gold-light: #d4b87a;
+  --color-gold-dark: #ab854b;
+  --color-gold-darker: #8b6f3f;
+  --color-bronze: #8B4513;
+  --color-cream: #f4e4c8;
+  --color-cream-light: #e8dcc8;
+  --color-cream-alt: #d4c5b0;
+  --color-brown-dark: #2d2520;
+  --color-brown-darker: #1f1a16;
+  --color-brown-medium: #463a2d;
+  --color-brown-light: #574a39;
+  --color-brown-lighter: #6b5d47;
+  --color-error: #ed5a5a;
+  --color-error-dark: #8B0000;
+  --color-error-bright: #DC143C;
+
+  /* Attribute Colors */
+  --color-constitution: #f4e066;
+  --color-strength: #ed9f4a;
+  --color-dexterity: #ed5a5a;
+  --color-scrutiny: #c47d5e;
+  --color-mystics: #d47dba;
+  --color-cursed: #9f82d6;
+
+  /* Gradients */
+  --gradient-background: linear-gradient(135deg, #3d3529 0%, #2d2520 50%, #1f1a16 100%);
+  --gradient-menu: linear-gradient(135deg, rgba(70, 58, 45, 0.98), rgba(45, 37, 32, 0.98));
+  --gradient-menu-alt: linear-gradient(135deg, rgba(70, 58, 45, 0.8), rgba(45, 37, 32, 0.9));
+  --gradient-button: linear-gradient(135deg, #6b5d47, #574a39);
+  --gradient-button-hover: linear-gradient(135deg, #8b7d57, #6b5d47);
+  --gradient-button-active: linear-gradient(135deg, #8b7d57, #7a6b4f);
+  --gradient-card: linear-gradient(135deg, rgba(87, 74, 57, 0.5), rgba(61, 53, 41, 0.6));
+  --gradient-card-hover: linear-gradient(135deg, rgba(107, 93, 71, 0.6), rgba(70, 58, 45, 0.7));
+  --gradient-panel: linear-gradient(135deg, rgba(107, 93, 71, 0.4), rgba(70, 58, 45, 0.6));
+  --gradient-panel-light: linear-gradient(135deg, rgba(107, 93, 71, 0.4), rgba(70, 58, 45, 0.3));
+  --gradient-input: linear-gradient(135deg, rgba(26, 20, 16, 0.9), rgba(45, 37, 32, 0.8));
+  --gradient-modal: linear-gradient(135deg, rgba(70, 58, 45, 0.98), rgba(45, 37, 32, 0.98));
+  --gradient-text-gold: linear-gradient(135deg, #f4e4c8, #c8a96b, #ab854b);
+  --gradient-text-title: linear-gradient(135deg, #f4e4c8 0%, #c8a96b 30%, #8b6f3f 60%, #c8a96b 100%);
+  --gradient-divider: linear-gradient(90deg, transparent, #c8a96b 20%, #d4b87a 50%, #c8a96b 80%, transparent);
+
+  /* Radial Gradients */
+  --gradient-radial-center: radial-gradient(circle at center, #6b5d47 0%, #574a39 40%, #463a2d 100%);
+  --gradient-radial-input: radial-gradient(circle, rgb(61, 53, 41), rgb(45, 37, 32));
+  --gradient-radial-dot: radial-gradient(circle, #d4b87a, #ab854b);
+  --gradient-radial-dot-small: radial-gradient(circle, #ab854b, #6b5d47);
+
+  /* Box Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 8px 20px rgba(0, 0, 0, 0.7);
+  --shadow-2xl: 0 20px 60px rgba(0, 0, 0, 0.9);
+  --shadow-gold: 0 0 20px rgba(200, 169, 107, 0.4);
+  --shadow-gold-lg: 0 16px 40px rgba(200, 169, 107, 0.5);
+  --shadow-inset: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+  --shadow-inset-light: inset 0 1px 2px rgba(200, 169, 107, 0.1);
+  --shadow-inset-gold: inset 0 2px 4px rgba(200, 169, 107, 0.2);
+
+  /* Font Families */
+  --font-title: 'Bebas Neue', sans-serif;
+  --font-value: 'Orbitron', sans-serif;
+  --font-body: 'Rajdhani', sans-serif;
+
+  /* Common Transitions */
+  --transition-transform: transform 0.3s ease;
+  --transition-colors: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  --transition-shadow: box-shadow 0.3s ease;
+  --transition-all-fast: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  --transition-all-medium: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}

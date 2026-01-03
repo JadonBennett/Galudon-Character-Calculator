@@ -1,0 +1,265 @@
+/* Galudon Character Calculator - Main Stylesheet */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;600;700&family=Bebas+Neue&display=swap');
+
+/* Import Component Stylesheets (order matters - variables first!) */
+@import './variables.css';
+@import './utilities.css';
+@import './navigation.css';
+@import './common.css';
+@import './character-sheet.css';
+@import './reference-page.css';
+@import './settings.css';
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base Application Styles */
+.galudon-calculator {
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, #3d3529 0%, #2d2520 50%, #1f1a16 100%);
+  color: var(--color-cream-light);
+  font-family: var(--font-body);
+  padding: 2rem;
+  position: relative;
+}
+
+.galudon-calculator::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(200, 169, 107, 0.02) 2px, rgba(200, 169, 107, 0.02) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(200, 169, 107, 0.02) 2px, rgba(200, 169, 107, 0.02) 4px),
+    radial-gradient(ellipse at 30% 40%, rgba(200, 169, 107, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 60%, rgba(171, 133, 75, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.galudon-calculator::after {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle, transparent 35%, rgba(0, 0, 0, 0.4) 100%),
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="85" fill="none" stroke="rgba(200,169,107,0.03)" stroke-width="2"/><circle cx="100" cy="100" r="75" fill="none" stroke="rgba(171,133,75,0.04)" stroke-width="1.5"/><circle cx="100" cy="100" r="65" fill="none" stroke="rgba(200,169,107,0.02)" stroke-width="1"/><g opacity="0.4"><circle cx="100" cy="20" r="4" fill="rgb(200,169,107)"/><circle cx="180" cy="100" r="4" fill="rgb(200,169,107)"/><circle cx="100" cy="180" r="4" fill="rgb(200,169,107)"/><circle cx="20" cy="100" r="4" fill="rgb(200,169,107)"/><circle cx="145" cy="40" r="3" fill="rgb(171,133,75)"/><circle cx="160" cy="145" r="3" fill="rgb(171,133,75)"/><circle cx="55" cy="160" r="3" fill="rgb(171,133,75)"/><circle cx="40" cy="55" r="3" fill="rgb(171,133,75)"/></g></svg>');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+  animation: rotateSlow 180s linear infinite;
+}
+
+.calculator-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  .galudon-calculator {
+    padding: 1rem;
+  }
+
+  .app-title {
+    font-size: 2rem;
+    letter-spacing: 3px;
+  }
+
+  .app-subtitle {
+    font-size: 1rem;
+    letter-spacing: 2px;
+  }
+
+  .tab-navigation {
+    flex-direction: column;
+  }
+
+  .points-display {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .points-card {
+    width: 300px;
+    height: 90px;
+  }
+
+  .points-card::before {
+    box-shadow:
+      0 0 6px rgba(212, 184, 122, 0.8),
+      264px 0 0 0 #d4b87a,
+      0 54px 0 0 #d4b87a,
+      264px 54px 0 0 #d4b87a;
+  }
+
+  .talents-list {
+    grid-template-columns: 1fr;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-row {
+    height: auto;
+    min-height: 60px;
+    padding: 0.75rem;
+    padding-right: 150px;
+  }
+
+  .skill-controls {
+    right: 0.75rem;
+    gap: 0.35rem;
+  }
+
+  .skill-controls button:first-of-type {
+    margin-left: 0.5rem;
+  }
+
+  .skill-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .skill-tier {
+    min-width: 60px;
+    font-size: 1rem;
+  }
+
+  .ref-stats {
+    gap: 1rem;
+  }
+
+  .character-name-display {
+    font-size: 2rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+  }
+
+  .stat-value {
+    font-size: 3rem;
+  }
+
+  .stat-label {
+    font-size: 1rem;
+  }
+
+  .unified-menu-content {
+    gap: 0.4rem;
+    padding: 0.5rem;
+    min-height: auto;
+  }
+
+  .unified-menu-btn,
+  .unified-menu-tab {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    height: 36px;
+  }
+
+  .unified-menu-tab:last-child {
+    width: 36px;
+    padding: 0.4rem;
+  }
+
+  .unified-menu-points {
+    padding: 0 1rem;
+    height: 36px;
+  }
+
+  .unified-points-label {
+    font-size: 1rem;
+  }
+
+  .unified-points-value {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .unified-menu-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .unified-menu-btn,
+  .unified-menu-tab {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .unified-menu-tab:last-child {
+    width: 100%;
+  }
+
+  .unified-menu-divider {
+    display: none;
+  }
+
+  .section-total-wrapper {
+    margin-top: 0.4rem;
+  }
+
+  .section-total {
+    font-size: 1rem;
+  }
+
+  .section-total-value {
+    min-width: 32px;
+  }
+
+  .section-remaining {
+    font-size: 1.2rem;
+    width: 50px;
+    padding: 0.25rem 0.4rem;
+    margin-top: 0.4rem;
+  }
+
+  .skill-row {
+    padding: 0.6rem;
+    padding-right: 140px;
+  }
+
+  .skill-name {
+    font-size: 0.9rem;
+  }
+
+  .skill-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .skill-tier {
+    min-width: 54px;
+    font-size: 0.9rem;
+  }
+
+  .skill-controls {
+    right: 0.6rem;
+    gap: 0.4rem;
+  }
+}

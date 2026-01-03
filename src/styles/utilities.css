@@ -1,0 +1,179 @@
+/* Utility Classes & Animations - Galudon Character Calculator */
+
+/* Font Utility Classes */
+.font-title {
+  font-family: var(--font-title);
+}
+
+.font-value {
+  font-family: var(--font-value);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Decorative Corners Utility */
+.decorative-corners::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--gradient-radial-dot);
+  border-radius: 50%;
+  box-shadow:
+    calc(100% - 16px) 0 0 0 var(--color-gold-light),
+    0 calc(100% - 16px) 0 0 var(--color-gold-light),
+    calc(100% - 16px) calc(100% - 16px) 0 0 var(--color-gold-light);
+}
+
+.decorative-corners-lg::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  background: var(--gradient-radial-dot);
+  border-radius: 50%;
+  box-shadow:
+    0 0 6px rgba(212, 184, 122, 0.8),
+    calc(100% - 24px) 0 0 0 var(--color-gold-light),
+    0 calc(100% - 24px) 0 0 var(--color-gold-light),
+    calc(100% - 24px) calc(100% - 24px) 0 0 var(--color-gold-light);
+}
+
+/* Keyframe Animations */
+@keyframes rotateSlow {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes rotateGear {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes iconPop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(50%);
+  }
+}
+
+@keyframes slideDownFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(50%);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 2000px;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
