@@ -1,4 +1,5 @@
 // Export all components from a single entry point
+export { Navigation } from './Navigation';
 export { default as StatTooltip } from './StatTooltip';
 export { default as StatCard } from './StatCard';
 export { default as CollapsibleSection } from './CollapsibleSection';

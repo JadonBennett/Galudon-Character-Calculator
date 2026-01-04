@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { INITIAL_TALENTS, BASE_POINTS } from '../config/talents';
 import { ARTS_IDS } from '../config/constants';
-import { getWarfareGrantedTalentId, getArtsGrantedTalentIds } from '../utils/talentHelpers';
 import { getTalentsWithTiers } from '../utils/calculations';
+import { calculateFreeTiers } from '../utils/freeTiers';
 
 /**
  * Custom hook for managing talent state and operations
@@ -46,25 +46,6 @@ export function useTalentState(extraPoints) {
       const talent = prev[category].find(s => s.id === talentId);
       if (!talent) return prev;
 
-      // Check if this skill is warfare-granted
-      const warfareGrantedTalentId = getWarfareGrantedTalentId(prev);
-
-      // Prevent removing warfare-granted point
-      if (talentId === warfareGrantedTalentId && delta < 0 && talent.tier === 1) {
-        return prev; // Can't go below tier 1 for warfare-granted skill
-      }
-
-      // Check if this skill is Arts-granted and count how many free points it has
-      const artsGrantedTalentIds = getArtsGrantedTalentIds(prev);
-
-      // Count how many times this skill is granted (could be 0, 1, or 2)
-      const artsGrantedCount = artsGrantedTalentIds.filter(id => id === talentId).length;
-
-      // Prevent removing Arts-granted points
-      if (artsGrantedCount > 0 && delta < 0 && talent.tier <= artsGrantedCount) {
-        return prev; // Can't go below the number of granted points
-      }
-
       const cost = talent.cost || 1;
       const isCurse = cost === 3;
       const isMystic = category === 'mystics';
@@ -88,28 +69,32 @@ export function useTalentState(extraPoints) {
         }
       }
 
-      const allSkills = [...prev.constitution, ...prev.strength, ...prev.dexterity, ...prev.scrutiny, ...prev.mystics, ...prev.curses];
+      // Calculate total spent with curse special rule and excluding free tiers
+      let totalSpent = 0;
 
-      // Calculate total spent with curse special rule
-      const totalSpent = allSkills.reduce((sum, s) => {
-        const sCost = s.cost || 1;
-        if (sCost === 3 && s.tier >= 1) {
-          return sum + 3;
-        }
+      // Process each category to calculate spent points
+      Object.entries(prev).forEach(([cat, talentsArray]) => {
+        talentsArray.forEach(s => {
+          const sCost = s.cost || 1;
 
-        // Exclude warfare-granted point from total
-        let effectiveTier = s.tier;
-        if (s.id === warfareGrantedTalentId && effectiveTier > 0) {
-          effectiveTier = Math.max(0, s.tier - 1);
-        }
+          // Curses cost 3 points flat if tier >= 1
+          if (sCost === 3 && s.tier >= 1) {
+            totalSpent += 3;
+            return;
+          }
 
-        // Exclude Arts-granted point from total
-        if (artsGrantedTalentIds.includes(s.id) && effectiveTier > 0) {
-          effectiveTier = Math.max(0, s.tier - 1);
-        }
+          // For other talents, exclude free tiers from the count
+          let effectiveTier = s.tier;
+          if (effectiveTier > 0) {
+            // Calculate free tiers granted to this talent
+            const freeTiersInfo = calculateFreeTiers(cat, s.id, prev);
+            // Subtract free tiers from the tier (can't go below 0)
+            effectiveTier = Math.max(0, s.tier - freeTiersInfo.count);
+          }
 
-        return sum + (effectiveTier * sCost);
-      }, 0);
+          totalSpent += (effectiveTier * sCost);
+        });
+      });
 
       const remaining = BASE_POINTS + extraPoints - totalSpent;
 

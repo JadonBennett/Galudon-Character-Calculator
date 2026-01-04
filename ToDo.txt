@@ -1,0 +1,7 @@
+add an appearing panel to the reference page for when a character has Animal Husbandry to display the creature stats.
+make section for feasted abilities for vampires
+Make a section for counting your ammo on a gun?
+Add pack tactics button for werewolves
+Werewolves can't use magic, unless Silvermoon
+add direwolf transformation button
+add feyshift button

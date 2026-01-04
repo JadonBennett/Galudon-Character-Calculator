@@ -7,6 +7,96 @@ import { useState, useCallback } from 'react';
 export function useCharacterData() {
   const [extraPoints, setExtraPoints] = useState(0);
   const [virtuoso, setVirtuoso] = useState(false);
+  const [foreignNotorietyEnabled, setForeignNotorietyEnabled] = useState(false);
+  const [foreignNotorietyName, setForeignNotorietyName] = useState('');
+  const [foreignNotorietyDescription, setForeignNotorietyDescription] = useState('');
+  const [customGrimoireEnabled, setCustomGrimoireEnabled] = useState(false);
+  const [customGrimoireName, setCustomGrimoireName] = useState('');
+  const [customGrimoireSourceLink, setCustomGrimoireSourceLink] = useState('');
+  const [customGrimoireSpells, setCustomGrimoireSpells] = useState({
+    1: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ],
+    2: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ],
+    3: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ]
+  });
+
+  // Enhanced Curse
+  const [enhancedCurseEnabled, setEnhancedCurseEnabled] = useState(false);
+  const [enhancedCurseName, setEnhancedCurseName] = useState('');
+  const [enhancedCurseSourceLink, setEnhancedCurseSourceLink] = useState('');
+  const [enhancedCurseAbilities, setEnhancedCurseAbilities] = useState({
+    1: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ],
+    2: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ],
+    3: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ]
+  });
+
+  // Enhanced Martial
+  const [enhancedMartialEnabled, setEnhancedMartialEnabled] = useState(false);
+  const [enhancedMartialName, setEnhancedMartialName] = useState('');
+  const [enhancedMartialSourceLink, setEnhancedMartialSourceLink] = useState('');
+  const [enhancedMartialAbilities, setEnhancedMartialAbilities] = useState({
+    1: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ],
+    2: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ],
+    3: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ]
+  });
+
+  // Luminarch
+  const [luminarchEnabled, setLuminarchEnabled] = useState(false);
+  const [luminarchName, setLuminarchName] = useState('');
+  const [luminarchSourceLink, setLuminarchSourceLink] = useState('');
+  const [luminarchAbilities, setLuminarchAbilities] = useState({
+    1: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ],
+    2: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ],
+    3: [
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' },
+      { name: '', description: '', cooldown: '', actionType: '' }
+    ]
+  });
+
   const [characterName, setCharacterName] = useState('');
   const [primaryWeapon, setPrimaryWeapon] = useState('');
   const [secondaryWeapon, setSecondaryWeapon] = useState('');
@@ -56,12 +146,90 @@ export function useCharacterData() {
     }));
   }, []);
 
+  const updateCustomGrimoireSpell = useCallback((tier, spellIndex, field, value) => {
+    setCustomGrimoireSpells(prev => ({
+      ...prev,
+      [tier]: prev[tier].map((spell, idx) =>
+        idx === spellIndex ? { ...spell, [field]: value } : spell
+      )
+    }));
+  }, []);
+
+  const updateEnhancedCurseAbility = useCallback((tier, abilityIndex, field, value) => {
+    setEnhancedCurseAbilities(prev => ({
+      ...prev,
+      [tier]: prev[tier].map((ability, idx) =>
+        idx === abilityIndex ? { ...ability, [field]: value } : ability
+      )
+    }));
+  }, []);
+
+  const updateEnhancedMartialAbility = useCallback((tier, abilityIndex, field, value) => {
+    setEnhancedMartialAbilities(prev => ({
+      ...prev,
+      [tier]: prev[tier].map((ability, idx) =>
+        idx === abilityIndex ? { ...ability, [field]: value } : ability
+      )
+    }));
+  }, []);
+
+  const updateLuminarchAbility = useCallback((tier, abilityIndex, field, value) => {
+    setLuminarchAbilities(prev => ({
+      ...prev,
+      [tier]: prev[tier].map((ability, idx) =>
+        idx === abilityIndex ? { ...ability, [field]: value } : ability
+      )
+    }));
+  }, []);
+
   return {
     // Settings state
     extraPoints,
     setExtraPoints,
     virtuoso,
     setVirtuoso,
+    foreignNotorietyEnabled,
+    setForeignNotorietyEnabled,
+    foreignNotorietyName,
+    setForeignNotorietyName,
+    foreignNotorietyDescription,
+    setForeignNotorietyDescription,
+    customGrimoireEnabled,
+    setCustomGrimoireEnabled,
+    customGrimoireName,
+    setCustomGrimoireName,
+    customGrimoireSourceLink,
+    setCustomGrimoireSourceLink,
+    customGrimoireSpells,
+    setCustomGrimoireSpells,
+    updateCustomGrimoireSpell,
+    enhancedCurseEnabled,
+    setEnhancedCurseEnabled,
+    enhancedCurseName,
+    setEnhancedCurseName,
+    enhancedCurseSourceLink,
+    setEnhancedCurseSourceLink,
+    enhancedCurseAbilities,
+    setEnhancedCurseAbilities,
+    updateEnhancedCurseAbility,
+    enhancedMartialEnabled,
+    setEnhancedMartialEnabled,
+    enhancedMartialName,
+    setEnhancedMartialName,
+    enhancedMartialSourceLink,
+    setEnhancedMartialSourceLink,
+    enhancedMartialAbilities,
+    setEnhancedMartialAbilities,
+    updateEnhancedMartialAbility,
+    luminarchEnabled,
+    setLuminarchEnabled,
+    luminarchName,
+    setLuminarchName,
+    luminarchSourceLink,
+    setLuminarchSourceLink,
+    luminarchAbilities,
+    setLuminarchAbilities,
+    updateLuminarchAbility,
 
     // Character info
     characterName,

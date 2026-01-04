@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ICON_MAP } from '../config/attributes';
 import { WEAPON_DAMAGE_PROGRESSION } from '../config/weaponData';
 import { getTalentsByCategory } from '../utils/calculations';
 import { calculateFreeTiers } from '../utils/freeTiers';
-import { consolidateSkillsByName, aggregateSkillsFromTalents } from '../utils/skillHelpers';
+import { consolidateSkillsByName, aggregateSkillsFromTalents, getMultiTierSkillNames } from '../utils/skillHelpers';
 import {
   StatCard,
   SimpleTooltip,
@@ -24,11 +24,31 @@ const ReferencePage = ({
   setWieldingFinesse,
   wieldingHeavy,
   setWieldingHeavy,
+  foreignNotorietyEnabled,
+  foreignNotorietyName,
+  foreignNotorietyDescription,
+  customGrimoireEnabled,
+  customGrimoireName,
+  customGrimoireSourceLink,
+  customGrimoireSpells,
   collapsedSections,
   toggleSection,
   expandedSkills,
   toggleSkill
 }) => {
+  // Get set of skills that can appear at multiple tiers (for showing tier indicators)
+  const multiTierSkillNames = useMemo(() => getMultiTierSkillNames(), []);
+
+  // Calculate highest tier with custom grimoire spells
+  const customGrimoireHighestTier = useMemo(() => {
+    if (!customGrimoireEnabled || !customGrimoireName) return 0;
+    for (let tier = 3; tier >= 1; tier--) {
+      const hasSpell = customGrimoireSpells[tier].some(spell => spell.name && spell.name.trim() !== '');
+      if (hasSpell) return tier;
+    }
+    return 0;
+  }, [customGrimoireEnabled, customGrimoireName, customGrimoireSpells]);
+
   return (
     <div className="reference-sheet">
       <div className="ref-header">
@@ -211,6 +231,16 @@ const ReferencePage = ({
           const curseTalents = getTalentsByCategory('curses', talents);
           const allTalents = [...constitutionTalents, ...dexterityTalents, ...scrutinyTalents, ...mysticTalents, ...curseTalents];
 
+          // Add custom grimoire talent if enabled and has spells
+          if (customGrimoireHighestTier > 0) {
+            allTalents.push({
+              id: 'custom-grimoire',
+              name: customGrimoireName,
+              tier: customGrimoireHighestTier,
+              isCustomGrimoire: true
+            });
+          }
+
           return allTalents.length > 0 && (
             <CollapsibleSection
               title="⚙ Talents"
@@ -221,6 +251,17 @@ const ReferencePage = ({
             >
               <div className="talents-list">
                 {allTalents.map(talent => {
+                  // Handle custom grimoire talent differently
+                  if (talent.isCustomGrimoire) {
+                    return (
+                      <TalentCard
+                        key={talent.id}
+                        skill={talent}
+                        freeTiers={{ count: 0 }}
+                      />
+                    );
+                  }
+
                   // Determine category for this talent
                   let category = '';
                   if (constitutionTalents.includes(talent)) category = 'constitution';
@@ -266,7 +307,6 @@ const ReferencePage = ({
             >
               <div className="talents-list">
                 {consolidatedActiveSkills.map(({ id, skill, talentName, tier, isCurse }) => {
-                  const hasMultipleTiers = activeSkillTierCounts[skill.name].size > 1;
                   return (
                     <TalentSkillCard
                       key={id}
@@ -275,7 +315,7 @@ const ReferencePage = ({
                       tier={tier}
                       isExpanded={!!expandedSkills[id]}
                       onToggle={() => toggleSkill(id)}
-                      showTierIndicator={hasMultipleTiers}
+                      showTierIndicator={multiTierSkillNames.has(skill.name)}
                       isCurse={isCurse}
                     />
                   );
@@ -306,6 +346,28 @@ const ReferencePage = ({
             }
           });
 
+          // Add custom grimoire spells
+          if (customGrimoireEnabled && customGrimoireName) {
+            [1, 2, 3].forEach(tier => {
+              customGrimoireSpells[tier].forEach((spell, idx) => {
+                if (spell.name && spell.name.trim() !== '') {
+                  grimoireSkills.push({
+                    id: `custom-grimoire-${tier}-${idx}`,
+                    skill: {
+                      name: spell.name,
+                      description: spell.description,
+                      cooldown: spell.cooldown,
+                      actionType: spell.actionType,
+                      link: customGrimoireSourceLink || undefined
+                    },
+                    talentName: customGrimoireName,
+                    tier: tier
+                  });
+                }
+              });
+            });
+          }
+
           // Consolidate duplicates
           const { consolidated: consolidatedGrimoireSkills, tierCounts: grimoireSkillTierCounts } = consolidateSkillsByName(grimoireSkills);
 
@@ -319,7 +381,6 @@ const ReferencePage = ({
             >
               <div className="talents-list">
                 {consolidatedGrimoireSkills.map(({ id, skill, talentName, tier }) => {
-                  const hasMultipleTiers = grimoireSkillTierCounts[skill.name].size > 1;
                   return (
                     <TalentSkillCard
                       key={id}
@@ -328,7 +389,7 @@ const ReferencePage = ({
                       tier={tier}
                       isExpanded={!!expandedSkills[id]}
                       onToggle={() => toggleSkill(id)}
-                      showTierIndicator={hasMultipleTiers}
+                      showTierIndicator={multiTierSkillNames.has(skill.name)}
                     />
                   );
                 })}
@@ -350,17 +411,36 @@ const ReferencePage = ({
           // Consolidate duplicates
           const { consolidated: consolidatedPassiveSkills, tierCounts: passiveSkillTierCounts } = consolidateSkillsByName(passiveSkills);
 
-          return consolidatedPassiveSkills.length > 0 && (
+          // Include foreign notoriety in the count if enabled
+          const totalPassiveCount = consolidatedPassiveSkills.length + (foreignNotorietyEnabled ? 1 : 0);
+
+          return (consolidatedPassiveSkills.length > 0 || foreignNotorietyEnabled) && (
             <CollapsibleSection
               title="🛡 Passive Skills"
               isCollapsed={collapsedSections.passiveSkills}
               onToggle={() => toggleSection('passiveSkills')}
-              count={consolidatedPassiveSkills.length}
+              count={totalPassiveCount}
               customClassName="passive-skills-section"
             >
               <div className="talents-list">
+                {/* Foreign Notoriety - Custom Passive Ability */}
+                {foreignNotorietyEnabled && foreignNotorietyName && (
+                  <div className="talent-skill-card foreign-notoriety-card">
+                    <div className="skill-header">
+                      <div className="skill-name-tier">
+                        <div className="skill-name">{foreignNotorietyName}</div>
+                        <div className="skill-tier-badge foreign-notoriety-badge">Custom Passive</div>
+                      </div>
+                    </div>
+                    <div className="skill-details">
+                      <div className="skill-description">
+                        {foreignNotorietyDescription || 'No description provided.'}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {consolidatedPassiveSkills.map(({ id, skill, talentName, tier, isCurse }) => {
-                  const hasMultipleTiers = passiveSkillTierCounts[skill.name].size > 1;
                   return (
                     <TalentSkillCard
                       key={id}
@@ -369,7 +449,7 @@ const ReferencePage = ({
                       tier={tier}
                       isExpanded={!!expandedSkills[id]}
                       onToggle={() => toggleSkill(id)}
-                      showTierIndicator={hasMultipleTiers}
+                      showTierIndicator={multiTierSkillNames.has(skill.name)}
                       isCurse={isCurse}
                     />
                   );

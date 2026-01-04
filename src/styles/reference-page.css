@@ -648,7 +648,7 @@
 }
 
 .wielding-badge {
-  background: linear-gradient(135deg, rgba(158, 110, 62, 0.6), rgba(117, 70, 50, 0.8));
+  background: linear-gradient(135deg, rgba(184, 129, 74, 0.4), rgba(158, 110, 62, 0.6));
   border: 3px solid #b8814a;
   border-radius: 6px;
   padding: 0.5rem 0.75rem;
@@ -1315,7 +1315,8 @@
   font-size: 1.15rem;
   color: var(--color-cream-light);
   margin-bottom: 0.5rem;
-  letter-spacing: 0.5px;
+  line-height: 1.15;
+  letter-spacing: 0.2px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
@@ -1363,7 +1364,7 @@
   display: flex;
   gap: 1.5rem;
   margin-top: 0.75rem;
-  justify-content: center;
+  justify-content: left;
 }
 
 .skill-ability-meta-item {
@@ -1459,8 +1460,21 @@
   background: linear-gradient(135deg, rgba(34, 139, 34, 0.2), rgba(0, 100, 0, 0.3));
   border-color: #228B22;
   color: #90ee90;
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(34, 139, 34, 0.3),
     inset 0 1px 0 rgba(144, 238, 144, 0.2);
 }
 
+/* Foreign Notoriety Card */
+.foreign-notoriety-card {
+  border-color: var(--color-gold-primary);
+  background: linear-gradient(135deg, rgba(200, 169, 107, 0.15), rgba(171, 133, 75, 0.1));
+}
+
+.foreign-notoriety-badge {
+  background: linear-gradient(135deg, var(--color-gold-primary), var(--color-gold-dark));
+  color: #1a1410;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}

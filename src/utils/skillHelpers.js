@@ -1,4 +1,43 @@
 import { calculateFreeTiers } from './freeTiers';
+import { INITIAL_TALENTS } from '../config/talents';
+
+/**
+ * Build a Set of skill names that can appear at multiple tiers within the same talent
+ * Used to determine if tier indicators should be shown
+ * @returns {Set} Set of skill names that have duplicates within talents
+ */
+export function getMultiTierSkillNames() {
+  const multiTierSkills = new Set();
+
+  // Check all talents in INITIAL_TALENTS
+  Object.values(INITIAL_TALENTS).forEach(category => {
+    category.forEach(talent => {
+      // Count how many tiers each skill appears in
+      const skillTierCounts = {};
+
+      [1, 2, 3].forEach(tier => {
+        const skillsList = talent.skills?.[tier] || [];
+        skillsList.forEach(skill => {
+          if (skill.name && skill.name.trim() !== '') {
+            if (!skillTierCounts[skill.name]) {
+              skillTierCounts[skill.name] = 0;
+            }
+            skillTierCounts[skill.name]++;
+          }
+        });
+      });
+
+      // Add skills that appear in more than one tier
+      Object.entries(skillTierCounts).forEach(([skillName, count]) => {
+        if (count > 1) {
+          multiTierSkills.add(skillName);
+        }
+      });
+    });
+  });
+
+  return multiTierSkills;
+}
 
 /**
  * Consolidate duplicate skills by name, keeping highest tier

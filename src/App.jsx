@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { INITIAL_TALENTS, ABILITY_BONUSES, BASE_POINTS, FREE_TIERS } from './config/talents';
-import { ATTRIBUTES, ICON_MAP } from './config/attributes';
+import { ICON_MAP } from './config/attributes';
 import { ERROR_MESSAGES, ARTS_IDS, WARFARE_SKILL_MAP } from './config/constants';
 import { WEAPON_DAMAGE_PROGRESSION } from './config/weaponData';
 import {
@@ -21,6 +21,7 @@ import {
 import { calculateFreeTiers, findTalentById } from './utils/freeTiers';
 import { consolidateSkillsByName, aggregateSkillsFromTalents } from './utils/skillHelpers';
 import {
+  Navigation,
   StatTooltip,
   StatCard,
   CollapsibleSection,
@@ -33,89 +34,6 @@ import {
 import { useTalentState, useStats, useCharacterData } from './hooks';
 import { CharacterSheet, ReferencePage, SettingsPage } from './pages';
 import './styles/index.css';
-
-// Character Calculator Talent Data (imported from ./data/talents.js)
-
-
-// ============================================================================
-// NAVIGATION COMPONENT
-// ============================================================================
-
-const Navigation = ({ stats, extraPoints, scrollToSection }) => {
-  const location = useLocation();
-  const currentPath = location.pathname;
-
-  return (
-    <nav className="unified-menu">
-      <div className="unified-menu-content">
-        <Link
-          to="/"
-          className={`unified-menu-tab ${currentPath === '/' ? 'active' : ''}`}
-          aria-label="View character sheet"
-          aria-current={currentPath === '/' ? 'page' : undefined}
-        >
-          CHARACTER SHEET
-        </Link>
-        <Link
-          to="/reference"
-          className={`unified-menu-tab ${currentPath === '/reference' ? 'active' : ''}`}
-          aria-label="View reference sheet"
-          aria-current={currentPath === '/reference' ? 'page' : undefined}
-        >
-          REFERENCE SHEET
-        </Link>
-
-        {/* Section navigation - only visible on character tab */}
-        {currentPath === '/' && (
-          <>
-            <div className="unified-menu-divider"></div>
-            <button
-              onClick={() => scrollToSection('section-character-info')}
-              className="unified-menu-btn"
-              aria-label="Jump to Character Information section"
-            >
-              {React.createElement(ICON_MAP['BookOpen'], { size: 18 })}
-              INFO
-            </button>
-            {Object.keys(ATTRIBUTES).map(key => {
-              const config = ATTRIBUTES[key];
-              const IconComponent = ICON_MAP[config.icon];
-
-              return (
-                <button
-                  key={key}
-                  onClick={() => scrollToSection(config.sectionId)}
-                  className="unified-menu-btn"
-                  aria-label={`Jump to ${config.label} section`}
-                >
-                  <IconComponent size={18} />
-                  {config.abbreviation}
-                </button>
-              );
-            })}
-            <div className="unified-menu-divider"></div>
-            <div className="unified-menu-points">
-              <span className="unified-points-label">Points:</span>
-              <span className={`unified-points-value ${stats.remaining < 0 ? 'negative' : ''}`}>
-                {stats.remaining}/{BASE_POINTS + extraPoints}
-              </span>
-            </div>
-          </>
-        )}
-
-        <div className="unified-menu-divider"></div>
-        <Link
-          to="/settings"
-          className={`unified-menu-tab ${currentPath === '/settings' ? 'active' : ''}`}
-          aria-label="View settings"
-          aria-current={currentPath === '/settings' ? 'page' : undefined}
-        >
-          {React.createElement(ICON_MAP['Settings'], { size: 18 })}
-        </Link>
-      </div>
-    </nav>
-  );
-};
 
 // ============================================================================
 // MAIN COMPONENT
@@ -132,6 +50,48 @@ function GaludonCalculator() {
     setExtraPoints,
     virtuoso,
     setVirtuoso,
+    foreignNotorietyEnabled,
+    setForeignNotorietyEnabled,
+    foreignNotorietyName,
+    setForeignNotorietyName,
+    foreignNotorietyDescription,
+    setForeignNotorietyDescription,
+    customGrimoireEnabled,
+    setCustomGrimoireEnabled,
+    customGrimoireName,
+    setCustomGrimoireName,
+    customGrimoireSourceLink,
+    setCustomGrimoireSourceLink,
+    customGrimoireSpells,
+    setCustomGrimoireSpells,
+    updateCustomGrimoireSpell,
+    enhancedCurseEnabled,
+    setEnhancedCurseEnabled,
+    enhancedCurseName,
+    setEnhancedCurseName,
+    enhancedCurseSourceLink,
+    setEnhancedCurseSourceLink,
+    enhancedCurseAbilities,
+    setEnhancedCurseAbilities,
+    updateEnhancedCurseAbility,
+    enhancedMartialEnabled,
+    setEnhancedMartialEnabled,
+    enhancedMartialName,
+    setEnhancedMartialName,
+    enhancedMartialSourceLink,
+    setEnhancedMartialSourceLink,
+    enhancedMartialAbilities,
+    setEnhancedMartialAbilities,
+    updateEnhancedMartialAbility,
+    luminarchEnabled,
+    setLuminarchEnabled,
+    luminarchName,
+    setLuminarchName,
+    luminarchSourceLink,
+    setLuminarchSourceLink,
+    luminarchAbilities,
+    setLuminarchAbilities,
+    updateLuminarchAbility,
     characterName,
     setCharacterName,
     primaryWeapon,
@@ -181,12 +141,109 @@ function GaludonCalculator() {
   } = characterData;
 
   // Calculate stats using custom hook
-  const stats = useStats(talents, extraPoints, virtuoso, wieldingFinesse, wieldingHeavy);
+  const stats = useStats(
+    talents,
+    extraPoints,
+    virtuoso,
+    wieldingFinesse,
+    wieldingHeavy,
+    customGrimoireEnabled,
+    customGrimoireSpells,
+    enhancedCurseEnabled,
+    enhancedCurseAbilities,
+    enhancedMartialEnabled,
+    enhancedMartialAbilities,
+    luminarchEnabled,
+    luminarchAbilities
+  );
 
   const resetToDefaults = useCallback(() => {
     setTalents(INITIAL_TALENTS);
     setExtraPoints(0);
     setVirtuoso(false);
+    setForeignNotorietyEnabled(false);
+    setForeignNotorietyName('');
+    setForeignNotorietyDescription('');
+    setCustomGrimoireEnabled(false);
+    setCustomGrimoireName('');
+    setCustomGrimoireSourceLink('');
+    setCustomGrimoireSpells({
+      1: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ],
+      2: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ],
+      3: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ]
+    });
+    setEnhancedCurseEnabled(false);
+    setEnhancedCurseName('');
+    setEnhancedCurseSourceLink('');
+    setEnhancedCurseAbilities({
+      1: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ],
+      2: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ],
+      3: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ]
+    });
+    setEnhancedMartialEnabled(false);
+    setEnhancedMartialName('');
+    setEnhancedMartialSourceLink('');
+    setEnhancedMartialAbilities({
+      1: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ],
+      2: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ],
+      3: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ]
+    });
+    setLuminarchEnabled(false);
+    setLuminarchName('');
+    setLuminarchSourceLink('');
+    setLuminarchAbilities({
+      1: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ],
+      2: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ],
+      3: [
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' },
+        { name: '', description: '', cooldown: '', actionType: '' }
+      ]
+    });
     setCharacterName('');
     setPrimaryWeapon('');
     setSecondaryWeapon('');
@@ -237,7 +294,7 @@ function GaludonCalculator() {
           return {
             id: skill.id,
             tier: exportTier,
-            ...(skill.name !== INITIAL_SKILLS[category].find(s => s.id === skill.id)?.name && { name: skill.name }), // Only if customized
+            ...(skill.name !== INITIAL_TALENTS[category].find(s => s.id === skill.id)?.name && { name: skill.name }), // Only if customized
             ...(skill.bonusTier && { bonusTier: skill.bonusTier }), // For Warfare/Arts
             ...(skill.subclass && { subclass: skill.subclass }) // For Curses
           };
@@ -273,7 +330,36 @@ function GaludonCalculator() {
         },
         settings: {
           extraPoints,
-          virtuoso
+          virtuoso,
+          foreignNotoriety: foreignNotorietyEnabled ? {
+            enabled: true,
+            name: foreignNotorietyName,
+            description: foreignNotorietyDescription
+          } : { enabled: false },
+          customGrimoire: customGrimoireEnabled ? {
+            enabled: true,
+            name: customGrimoireName,
+            sourceLink: customGrimoireSourceLink,
+            spells: customGrimoireSpells
+          } : { enabled: false },
+          enhancedCurse: enhancedCurseEnabled ? {
+            enabled: true,
+            name: enhancedCurseName,
+            sourceLink: enhancedCurseSourceLink,
+            abilities: enhancedCurseAbilities
+          } : { enabled: false },
+          enhancedMartial: enhancedMartialEnabled ? {
+            enabled: true,
+            name: enhancedMartialName,
+            sourceLink: enhancedMartialSourceLink,
+            abilities: enhancedMartialAbilities
+          } : { enabled: false },
+          luminarch: luminarchEnabled ? {
+            enabled: true,
+            name: luminarchName,
+            sourceLink: luminarchSourceLink,
+            abilities: luminarchAbilities
+          } : { enabled: false }
         }
       }
     };
@@ -287,7 +373,7 @@ function GaludonCalculator() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  }, [characterName, race, age, pronouns, sexuality, hairColor, skinColor, eyeColor, height, weight, clothingDescription, geneticMutations, prosthetics, bodyMods, talents, primaryWeapon, secondaryWeapon, extraPoints, virtuoso]);
+  }, [characterName, race, age, pronouns, sexuality, hairColor, skinColor, eyeColor, height, weight, clothingDescription, geneticMutations, prosthetics, bodyMods, talents, primaryWeapon, secondaryWeapon, extraPoints, virtuoso, foreignNotorietyEnabled, foreignNotorietyName, foreignNotorietyDescription, customGrimoireEnabled, customGrimoireName, customGrimoireSourceLink, customGrimoireSpells, enhancedCurseEnabled, enhancedCurseName, enhancedCurseSourceLink, enhancedCurseAbilities, enhancedMartialEnabled, enhancedMartialName, enhancedMartialSourceLink, enhancedMartialAbilities, luminarchEnabled, luminarchName, luminarchSourceLink, luminarchAbilities]);
 
   const importCharacter = useCallback((event) => {
     const file = event.target.files?.[0];
@@ -308,8 +394,8 @@ function GaludonCalculator() {
         // Import skills - reconstruct full skill objects from minimal export data
         let reconstructedTalents = {};
         if (char.skills) {
-          Object.keys(INITIAL_SKILLS).forEach(category => {
-            reconstructedTalents[category] = INITIAL_SKILLS[category].map(initialSkill => {
+          Object.keys(INITIAL_TALENTS).forEach(category => {
+            reconstructedTalents[category] = INITIAL_TALENTS[category].map(initialSkill => {
               const importedSkill = char.skills[category]?.find(s => s.id === initialSkill.id);
               return {
                 ...initialSkill,
@@ -352,10 +438,62 @@ function GaludonCalculator() {
           return sum + (skill.tier * cost);
         }, 0);
 
+        // Calculate custom grimoire cost
+        let grimoireCost = 0;
+        if (char.settings?.customGrimoire?.enabled && char.settings?.customGrimoire?.spells) {
+          const spells = char.settings.customGrimoire.spells;
+          for (let tier = 3; tier >= 1; tier--) {
+            const hasSpell = spells[tier]?.some(spell => spell.name && spell.name.trim() !== '');
+            if (hasSpell) {
+              grimoireCost = tier;
+              break;
+            }
+          }
+        }
+
+        // Calculate enhanced curse cost
+        let enhancedCurseCost = 0;
+        if (char.settings?.enhancedCurse?.enabled && char.settings?.enhancedCurse?.abilities) {
+          const abilities = char.settings.enhancedCurse.abilities;
+          for (let tier = 3; tier >= 1; tier--) {
+            const hasAbility = abilities[tier]?.some(ability => ability.name && ability.name.trim() !== '');
+            if (hasAbility) {
+              enhancedCurseCost = tier;
+              break;
+            }
+          }
+        }
+
+        // Calculate enhanced martial cost
+        let enhancedMartialCost = 0;
+        if (char.settings?.enhancedMartial?.enabled && char.settings?.enhancedMartial?.abilities) {
+          const abilities = char.settings.enhancedMartial.abilities;
+          for (let tier = 3; tier >= 1; tier--) {
+            const hasAbility = abilities[tier]?.some(ability => ability.name && ability.name.trim() !== '');
+            if (hasAbility) {
+              enhancedMartialCost = tier;
+              break;
+            }
+          }
+        }
+
+        // Calculate luminarch cost
+        let luminarchCost = 0;
+        if (char.settings?.luminarch?.enabled && char.settings?.luminarch?.abilities) {
+          const abilities = char.settings.luminarch.abilities;
+          for (let tier = 3; tier >= 1; tier--) {
+            const hasAbility = abilities[tier]?.some(ability => ability.name && ability.name.trim() !== '');
+            if (hasAbility) {
+              luminarchCost = tier;
+              break;
+            }
+          }
+        }
+
         const importedExtraPoints = char.settings?.extraPoints || 0;
         const availablePoints = BASE_POINTS + importedExtraPoints;
 
-        if (totalSpent > availablePoints) {
+        if (totalSpent + grimoireCost + enhancedCurseCost + enhancedMartialCost + luminarchCost > availablePoints) {
           setShowImportError(true);
           return;
         }
@@ -379,9 +517,9 @@ function GaludonCalculator() {
         setBodyMods(char.appearance?.bodyMods || '');
 
         // After reconstructing skills, add back warfare-granted and arts-granted tiers
-        // Find Warfare and check if it has a bonusTier
+        // Find Warfare and check if it has a bonusTier AND tier >= 1 to grant the bonus
         const warfare = reconstructedTalents.scrutiny?.find(s => s.id === 'warfare');
-        if (warfare?.bonusTier) {
+        if (warfare?.bonusTier && warfare.tier >= 1) {
           const grantedSkillId = WARFARE_SKILL_MAP[warfare.bonusTier];
           if (grantedSkillId) {
             reconstructedTalents.strength = reconstructedTalents.strength.map(s =>
@@ -390,10 +528,10 @@ function GaludonCalculator() {
           }
         }
 
-        // Find The Arts and check if they have subclasses
+        // Find The Arts and check if they have bonusTier AND tier >= 2 to grant the bonus
         ARTS_IDS.forEach(artsId => {
           const arts = reconstructedTalents.constitution?.find(s => s.id === artsId);
-          if (arts?.bonusTier && (arts.bonusTier === 'academics-1' || arts.bonusTier === 'academics-2')) {
+          if (arts?.bonusTier && arts.tier >= 2 && (arts.bonusTier === 'academics-1' || arts.bonusTier === 'academics-2')) {
             reconstructedTalents.scrutiny = reconstructedTalents.scrutiny.map(s =>
               s.id === arts.bonusTier ? { ...s, tier: s.tier + 1 } : s
             );
@@ -410,6 +548,89 @@ function GaludonCalculator() {
         // Import settings
         setExtraPoints(char.settings?.extraPoints || 0);
         setVirtuoso(char.settings?.virtuoso || false);
+        setForeignNotorietyEnabled(char.settings?.foreignNotoriety?.enabled || false);
+        setForeignNotorietyName(char.settings?.foreignNotoriety?.name || '');
+        setForeignNotorietyDescription(char.settings?.foreignNotoriety?.description || '');
+        setCustomGrimoireEnabled(char.settings?.customGrimoire?.enabled || false);
+        setCustomGrimoireName(char.settings?.customGrimoire?.name || '');
+        setCustomGrimoireSourceLink(char.settings?.customGrimoire?.sourceLink || '');
+        setCustomGrimoireSpells(char.settings?.customGrimoire?.spells || {
+          1: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ],
+          2: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ],
+          3: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ]
+        });
+        setEnhancedCurseEnabled(char.settings?.enhancedCurse?.enabled || false);
+        setEnhancedCurseName(char.settings?.enhancedCurse?.name || '');
+        setEnhancedCurseSourceLink(char.settings?.enhancedCurse?.sourceLink || '');
+        setEnhancedCurseAbilities(char.settings?.enhancedCurse?.abilities || {
+          1: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ],
+          2: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ],
+          3: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ]
+        });
+        setEnhancedMartialEnabled(char.settings?.enhancedMartial?.enabled || false);
+        setEnhancedMartialName(char.settings?.enhancedMartial?.name || '');
+        setEnhancedMartialSourceLink(char.settings?.enhancedMartial?.sourceLink || '');
+        setEnhancedMartialAbilities(char.settings?.enhancedMartial?.abilities || {
+          1: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ],
+          2: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ],
+          3: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ]
+        });
+        setLuminarchEnabled(char.settings?.luminarch?.enabled || false);
+        setLuminarchName(char.settings?.luminarch?.name || '');
+        setLuminarchSourceLink(char.settings?.luminarch?.sourceLink || '');
+        setLuminarchAbilities(char.settings?.luminarch?.abilities || {
+          1: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ],
+          2: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ],
+          3: [
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' },
+            { name: '', description: '', cooldown: '', actionType: '' }
+          ]
+        });
 
         setShowImportSuccess(true);
       } catch (error) {
@@ -498,6 +719,13 @@ function GaludonCalculator() {
               setWieldingFinesse={setWieldingFinesse}
               wieldingHeavy={wieldingHeavy}
               setWieldingHeavy={setWieldingHeavy}
+              foreignNotorietyEnabled={foreignNotorietyEnabled}
+              foreignNotorietyName={foreignNotorietyName}
+              foreignNotorietyDescription={foreignNotorietyDescription}
+              customGrimoireEnabled={customGrimoireEnabled}
+              customGrimoireName={customGrimoireName}
+              customGrimoireSourceLink={customGrimoireSourceLink}
+              customGrimoireSpells={customGrimoireSpells}
               collapsedSections={collapsedSections}
               toggleSection={toggleSection}
               expandedSkills={expandedSkills}
@@ -510,6 +738,20 @@ function GaludonCalculator() {
               setExtraPoints={setExtraPoints}
               virtuoso={virtuoso}
               setVirtuoso={setVirtuoso}
+              foreignNotorietyEnabled={foreignNotorietyEnabled}
+              setForeignNotorietyEnabled={setForeignNotorietyEnabled}
+              foreignNotorietyName={foreignNotorietyName}
+              setForeignNotorietyName={setForeignNotorietyName}
+              foreignNotorietyDescription={foreignNotorietyDescription}
+              setForeignNotorietyDescription={setForeignNotorietyDescription}
+              customGrimoireEnabled={customGrimoireEnabled}
+              setCustomGrimoireEnabled={setCustomGrimoireEnabled}
+              customGrimoireName={customGrimoireName}
+              setCustomGrimoireName={setCustomGrimoireName}
+              customGrimoireSourceLink={customGrimoireSourceLink}
+              setCustomGrimoireSourceLink={setCustomGrimoireSourceLink}
+              customGrimoireSpells={customGrimoireSpells}
+              updateCustomGrimoireSpell={updateCustomGrimoireSpell}
               resetToDefaults={resetToDefaults}
               exportCharacter={exportCharacter}
               importCharacter={importCharacter}

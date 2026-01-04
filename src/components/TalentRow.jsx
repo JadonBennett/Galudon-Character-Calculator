@@ -244,7 +244,7 @@ const TalentRow = React.memo(({ talent, freeTiers, freeTiersSources, displayTier
         <button
           type="button"
           onClick={handleDecreaseClick}
-          disabled={talent.tier === 0 || isWarfareGranted || talent.tier <= artsGrantedCount}
+          disabled={talent.tier === 0}
           className="skill-btn"
           aria-label="Decrease"
         >

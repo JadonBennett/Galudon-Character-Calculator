@@ -2,6 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  overflow: visible;
 }
 
 .sheet-title {
@@ -26,12 +27,8 @@
 }
 
 .settings-section {
-  background: linear-gradient(135deg, rgba(70, 58, 45, 0.4), rgba(45, 37, 32, 0.5));
-  border: 3px solid var(--color-gold-dark);
-  border-radius: 16px;
-  padding: 2rem;
   margin-bottom: 3rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  overflow: visible;
 }
 
 .settings-section-title {
@@ -44,6 +41,104 @@
     0 2px 6px rgba(0, 0, 0, 0.8);
   margin-bottom: 2rem;
   letter-spacing: 3px;
+}
+
+.settings-subsection-title {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  text-align: center;
+  color: var(--color-gold-primary);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  margin-bottom: 1.5rem;
+  letter-spacing: 2px;
+}
+
+/* Tier Sections Container - Stacked Vertically */
+.settings-tiers-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+  overflow: visible;
+}
+
+/* Tier Section Collapsible Styling */
+.settings-tier-section {
+  /* margin removed since grid gap handles spacing */
+  overflow: visible;
+}
+
+.settings-tier-section .collapsible-header {
+  background: linear-gradient(135deg, rgba(70, 58, 45, 0.6), rgba(45, 37, 32, 0.7));
+  border: 2px solid var(--color-gold-dark);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.settings-tier-section .collapsible-header:hover {
+  border-color: var(--color-gold-primary);
+  box-shadow: 0 4px 8px rgba(200, 169, 107, 0.2);
+}
+
+.settings-tier-section .collapsible-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--color-gold-light);
+  letter-spacing: 2px;
+}
+
+.settings-tier-section .collapsible-content {
+  padding: 2rem 1.5rem 1rem 1.5rem;
+  overflow: visible;
+}
+
+/* Settings Cards Grid - Permission Cards Layout */
+.settings-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  justify-items: start;
+  overflow: visible;
+}
+
+.settings-cards .points-card {
+  width: 100%;
+  max-width: 280px;
+}
+
+/* Notoriety Panel Collapsible Styling */
+.settings-notoriety-panel {
+  margin-top: 2rem;
+  overflow: visible;
+}
+
+.settings-notoriety-panel .collapsible-header {
+  background: linear-gradient(135deg, rgba(200, 169, 107, 0.2), rgba(171, 133, 75, 0.15));
+  border: 2px solid var(--color-gold-dark);
+  border-radius: 8px;
+  padding: 0.875rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.settings-notoriety-panel .collapsible-header:hover {
+  border-color: var(--color-gold-primary);
+  box-shadow: 0 4px 8px rgba(200, 169, 107, 0.3);
+}
+
+.settings-notoriety-panel .collapsible-title {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--color-gold-primary);
+  letter-spacing: 1.5px;
+}
+
+.settings-notoriety-panel .collapsible-content {
+  padding: 1.25rem 0.5rem 0.75rem 0.5rem;
+  overflow: visible;
 }
 
 .data-management-section {
@@ -232,7 +327,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .points-card::before {
@@ -246,9 +341,9 @@
   border-radius: 50%;
   box-shadow:
     0 0 6px rgba(212, 184, 122, 0),
-    244px 0 0 0 #d4b87a,
+    216px 0 0 0 #d4b87a,
     0 64px 0 0 #d4b87a,
-    244px 64px 0 0 #d4b87a;
+    216px 64px 0 0 #d4b87a;
 }
 
 .points-card::after {
@@ -273,10 +368,11 @@
 
 .points-label {
   font-family: var(--font-title);
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   color: var(--color-gold-primary);
   text-transform: uppercase;
   letter-spacing: 2px;
+  line-height: 1;
   position: relative;
   z-index: 1;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
@@ -330,7 +426,7 @@
     0 0 20px rgba(200, 169, 107, 0.6);
 }
 
-.virtuoso-toggle {
+.checkbox-toggle {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -340,7 +436,7 @@
   z-index: 1;
 }
 
-.virtuoso-toggle input[type="checkbox"] {
+.checkbox-toggle input[type="checkbox"] {
   width: 60px;
   height: 60px;
   cursor: pointer;
@@ -353,12 +449,12 @@
   transition: var(--transition-all-medium);
 }
 
-.virtuoso-toggle input[type="checkbox"]:checked {
+.checkbox-toggle input[type="checkbox"]:checked {
   background: linear-gradient(135deg, #c8a96b, #ab854b);
   border-color: var(--color-gold-light);
 }
 
-.virtuoso-toggle input[type="checkbox"]::after {
+.checkbox-toggle input[type="checkbox"]::after {
   content: '✓';
   position: absolute;
   top: 50%;
@@ -370,11 +466,11 @@
   transition: transform 0.2s ease;
 }
 
-.virtuoso-toggle input[type="checkbox"]:checked::after {
+.checkbox-toggle input[type="checkbox"]:checked::after {
   transform: translate(-50%, -50%) scale(1);
 }
 
-.virtuoso-toggle input[type="checkbox"]:focus {
+.checkbox-toggle input[type="checkbox"]:focus {
   outline: none;
   border-color: var(--color-gold-light);
   box-shadow:
@@ -446,6 +542,56 @@
   line-height: 1.5;
 }
 
+/* Foreign Notoriety Inputs */
+.notoriety-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.notoriety-text-input,
+.notoriety-textarea-input {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(29, 24, 20, 0.8);
+  border: 2px solid var(--color-gold-dark);
+  color: var(--color-cream-light);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notoriety-text-input {
+  border-radius: 8px 8px 0 0;
+  border-bottom: none;
+}
+
+.notoriety-textarea-input {
+  border-radius: 0 0 8px 8px;
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+}
+
+.notoriety-text-input:focus,
+.notoriety-textarea-input:focus {
+  border-color: var(--color-gold-primary);
+  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3);
+  z-index: 1;
+  position: relative;
+}
+
+/* Empty Tier Card */
+.empty-tier-card {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.empty-tier-card:hover {
+  transform: none;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
 .virtuoso-status {
   font-family: var(--font-value);
   font-size: 1.4rem;
@@ -510,6 +656,264 @@
 .alert-success svg {
   color: var(--color-gold-primary);
   filter: drop-shadow(0 0 4px rgba(200, 169, 107, 0.6));
+}
+
+/* Custom Grimoire Card - Matches other permission cards */
+.grimoire-card {
+  /* Uses default points-card styling */
+}
+
+/* Custom Grimoire Panel */
+.settings-grimoire-panel {
+  margin-top: 1.5rem;
+  overflow: visible;
+}
+
+.settings-grimoire-panel .collapsible-header {
+  background: linear-gradient(135deg, rgba(139, 111, 63, 0.2), rgba(87, 74, 57, 0.3));
+  border: 2px solid var(--color-gold-dark);
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.settings-grimoire-panel .collapsible-header:hover {
+  border-color: var(--color-gold-primary);
+  box-shadow: 0 4px 8px rgba(200, 169, 107, 0.3);
+}
+
+.settings-grimoire-panel .collapsible-title {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--color-gold-light);
+  letter-spacing: 1.5px;
+}
+
+.settings-grimoire-panel .collapsible-content {
+  padding: 1rem;
+  background: rgba(30, 25, 20, 0.4);
+  border: 2px solid rgba(200, 169, 107, 0.2);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: visible;
+}
+
+/* Grimoire Inputs Container */
+.grimoire-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: visible;
+}
+
+/* Grimoire Name Section */
+.grimoire-name-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grimoire-name-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: #f4e4c8;
+  background: rgba(40, 30, 20, 0.6);
+  border: 2px solid var(--color-gold-dark);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.grimoire-name-input:focus {
+  border-color: var(--color-gold-primary);
+  background: rgba(50, 35, 25, 0.7);
+  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3);
+}
+
+.grimoire-name-input::placeholder {
+  color: rgba(212, 184, 122, 0.4);
+}
+
+/* Grimoire Source Section */
+.grimoire-source-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grimoire-source-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: #f4e4c8;
+  background: rgba(40, 30, 20, 0.6);
+  border: 2px solid var(--color-gold-dark);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.grimoire-source-input:focus {
+  border-color: var(--color-gold-primary);
+  background: rgba(50, 35, 25, 0.7);
+  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3);
+}
+
+.grimoire-source-input::placeholder {
+  color: rgba(212, 184, 122, 0.4);
+}
+
+/* Grimoire Tier Section */
+.grimoire-tier-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(50, 40, 30, 0.3);
+  border: 2px solid rgba(200, 169, 107, 0.3);
+  border-radius: 8px;
+  overflow: visible;
+}
+
+.grimoire-tier-title {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--color-gold-light);
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+/* Individual Spell Inputs */
+.grimoire-spell-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: rgba(30, 25, 20, 0.5);
+  border: 2px solid rgba(200, 169, 107, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Spell Header - Name, Cooldown, Action Type on same line */
+.grimoire-spell-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0;
+}
+
+.grimoire-spell-name {
+  padding: 0.6rem 0.85rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f4e4c8;
+  background: rgba(60, 45, 30, 0.6);
+  border: none;
+  border-right: 1px solid rgba(200, 169, 107, 0.3);
+  border-bottom: 2px solid rgba(200, 169, 107, 0.3);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.grimoire-spell-name:focus {
+  background: rgba(70, 50, 35, 0.7);
+  box-shadow: inset 0 0 8px rgba(200, 169, 107, 0.2);
+}
+
+.grimoire-spell-name::placeholder {
+  color: rgba(212, 184, 122, 0.4);
+  font-weight: normal;
+}
+
+.grimoire-spell-cooldown,
+.grimoire-spell-actiontype {
+  padding: 0.6rem 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: #f4e4c8;
+  background: rgba(50, 35, 25, 0.6);
+  border: none;
+  border-bottom: 2px solid rgba(200, 169, 107, 0.3);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.grimoire-spell-cooldown {
+  border-right: 1px solid rgba(200, 169, 107, 0.3);
+}
+
+.grimoire-spell-cooldown:focus,
+.grimoire-spell-actiontype:focus {
+  background: rgba(60, 40, 30, 0.7);
+  box-shadow: inset 0 0 6px rgba(200, 169, 107, 0.2);
+}
+
+.grimoire-spell-description {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: #f4e4c8;
+  background: rgba(40, 30, 20, 0.6);
+  border: none;
+  outline: none;
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+  transition: all 0.3s ease;
+  border-radius: 0 0 6px 6px;
+}
+
+.grimoire-spell-description:focus {
+  background: rgba(50, 35, 25, 0.7);
+  box-shadow: inset 0 0 8px rgba(200, 169, 107, 0.2);
+}
+
+.grimoire-spell-description::placeholder {
+  color: rgba(212, 184, 122, 0.4);
+}
+
+.grimoire-spell-cooldown::placeholder,
+.grimoire-spell-actiontype::placeholder {
+  color: rgba(212, 184, 122, 0.4);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .grimoire-tier-section {
+    padding: 1rem;
+  }
+
+  .grimoire-tier-title {
+    font-size: 1.2rem;
+  }
+
+  .grimoire-spell-header {
+    grid-template-columns: 1fr;
+  }
+
+  .grimoire-spell-name {
+    border-right: none;
+    border-bottom: 1px solid rgba(200, 169, 107, 0.3);
+  }
+
+  .grimoire-spell-cooldown {
+    border-right: none;
+    border-bottom: 1px solid rgba(200, 169, 107, 0.3);
+  }
+
+  .grimoire-spell-actiontype {
+    border-bottom: 2px solid rgba(200, 169, 107, 0.3);
+  }
+
+  .grimoire-spell-description {
+    border-radius: 0 0 6px 6px;
+  }
 }
 
 /* Character Information Section */

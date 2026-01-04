@@ -1,5 +1,6 @@
 import React from 'react';
 import { ICON_MAP } from '../config/attributes';
+import { getTierIdentifier } from '../config/skillTierIdentifiers';
 
 // TalentSkillCard - Displays individual skill with talent source
 const TalentSkillCard = ({ skill, talentName, tier, isExpanded, onToggle, showTierIndicator = false, isCurse = false }) => {
@@ -8,17 +9,7 @@ const TalentSkillCard = ({ skill, talentName, tier, isExpanded, onToggle, showTi
     onToggle();
   };
 
-  // Generate tier prefix: Novice/Adept/Master
-  const getTierPrefix = (tier) => {
-    switch(tier) {
-      case 1: return 'Novice';
-      case 2: return 'Adept';
-      case 3: return 'Master';
-      default: return '';
-    }
-  };
-
-  const displayName = showTierIndicator ? `${getTierPrefix(tier)} ${skill.name}` : skill.name;
+  const displayName = showTierIndicator ? `${getTierIdentifier(skill.name, tier)} ${skill.name}` : skill.name;
   const sourceText = isCurse ? `From: ${talentName} Curse` : `From: ${talentName} T${tier}`;
 
   return (
@@ -42,12 +33,12 @@ const TalentSkillCard = ({ skill, talentName, tier, isExpanded, onToggle, showTi
           <div className="skill-ability-meta">
             {skill.actionType && (
               <div className="skill-ability-meta-item">
-                <strong>Action Type:</strong> {skill.actionType}
+                <strong>Action Type:</strong><p>{skill.actionType}</p>
               </div>
             )}
             {skill.cooldown && (
               <div className="skill-ability-meta-item">
-                <strong>Cooldown:</strong> {skill.cooldown}
+                <strong>Cooldown:</strong> <p>{skill.cooldown}</p>
               </div>
             )}
           </div>

@@ -14,7 +14,7 @@ import { getWarfareGrantedTalentId, getArtsGrantedTalentIds } from '../utils/tal
  * Custom hook for calculating all character stats
  * Returns comprehensive stats object with totals, breakdowns, and error states
  */
-export function useStats(talents, extraPoints, virtuoso, wieldingFinesse, wieldingHeavy) {
+export function useStats(talents, extraPoints, virtuoso, wieldingFinesse, wieldingHeavy, customGrimoireEnabled, customGrimoireSpells, enhancedCurseEnabled, enhancedCurseAbilities, enhancedMartialEnabled, enhancedMartialAbilities, luminarchEnabled, luminarchAbilities) {
   const stats = useMemo(() => {
     const allSkills = aggregateAllTalents(talents);
 
@@ -27,15 +27,65 @@ export function useStats(talents, extraPoints, virtuoso, wieldingFinesse, wieldi
     // Calculate total spent
     const totalSpent = calculateTotalSpent(allSkills, warfareGrantedTalentId, artsGrantedTalentIds);
 
-    const remaining = BASE_POINTS + extraPoints - totalSpent;
+    // Calculate custom grimoire cost (highest tier with spells)
+    let grimoireCost = 0;
+    if (customGrimoireEnabled && customGrimoireSpells) {
+      for (let tier = 3; tier >= 1; tier--) {
+        const hasSpell = customGrimoireSpells[tier]?.some(spell => spell.name && spell.name.trim() !== '');
+        if (hasSpell) {
+          grimoireCost = tier;
+          break;
+        }
+      }
+    }
+
+    // Calculate enhanced curse cost (highest tier with abilities)
+    let enhancedCurseCost = 0;
+    if (enhancedCurseEnabled && enhancedCurseAbilities) {
+      for (let tier = 3; tier >= 1; tier--) {
+        const hasAbility = enhancedCurseAbilities[tier]?.some(ability => ability.name && ability.name.trim() !== '');
+        if (hasAbility) {
+          enhancedCurseCost = tier;
+          break;
+        }
+      }
+    }
+
+    // Calculate enhanced martial cost (highest tier with abilities)
+    let enhancedMartialCost = 0;
+    if (enhancedMartialEnabled && enhancedMartialAbilities) {
+      for (let tier = 3; tier >= 1; tier--) {
+        const hasAbility = enhancedMartialAbilities[tier]?.some(ability => ability.name && ability.name.trim() !== '');
+        if (hasAbility) {
+          enhancedMartialCost = tier;
+          break;
+        }
+      }
+    }
+
+    // Calculate luminarch cost (highest tier with abilities)
+    let luminarchCost = 0;
+    if (luminarchEnabled && luminarchAbilities) {
+      for (let tier = 3; tier >= 1; tier--) {
+        const hasAbility = luminarchAbilities[tier]?.some(ability => ability.name && ability.name.trim() !== '');
+        if (hasAbility) {
+          luminarchCost = tier;
+          break;
+        }
+      }
+    }
+
+    const remaining = BASE_POINTS + extraPoints - totalSpent - grimoireCost - enhancedCurseCost - enhancedMartialCost - luminarchCost;
     const tier3Count = allSkills.filter(s => s.tier >= 3).length;
     const hasError = tier3Count > 1 && !virtuoso;
 
     // Count mystics and curses with tiers
     const mysticsWithTiersCount = getTalentsWithTiers(talents.mystics).length;
     const cursesWithTiersCount = getTalentsWithTiers(talents.curses).length;
-    const hasMysticsError = mysticsWithTiersCount > 1;
-    const hasCursesError = cursesWithTiersCount > 1;
+    // Custom Magic Grimoire counts as a mystic with tiers
+    const hasMysticsError = mysticsWithTiersCount + (customGrimoireEnabled ? 1 : 0) > 1;
+    // Enhanced Curse counts as a curse with tiers
+    const hasCursesError = cursesWithTiersCount + (enhancedCurseEnabled ? 1 : 0) > 1;
 
     // Calculate tier bonuses for all skills with detailed breakdown
     const { bonuses: abilityBonuses, breakdowns: abilityBreakdowns } = calculateTierBonuses(allSkills, talents);
@@ -77,6 +127,10 @@ export function useStats(talents, extraPoints, virtuoso, wieldingFinesse, wieldi
 
     return {
       totalSpent,
+      grimoireCost,
+      enhancedCurseCost,
+      enhancedMartialCost,
+      luminarchCost,
       remaining,
       tier3Count,
       hasError,
@@ -124,7 +178,7 @@ export function useStats(talents, extraPoints, virtuoso, wieldingFinesse, wieldi
         return acc;
       }, {})
     };
-  }, [talents, extraPoints, virtuoso, wieldingFinesse, wieldingHeavy]);
+  }, [talents, extraPoints, virtuoso, wieldingFinesse, wieldingHeavy, customGrimoireEnabled, customGrimoireSpells, enhancedCurseEnabled, enhancedCurseAbilities, enhancedMartialEnabled, enhancedMartialAbilities, luminarchEnabled, luminarchAbilities]);
 
   return stats;
 }
