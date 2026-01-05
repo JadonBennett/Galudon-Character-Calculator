@@ -567,6 +567,38 @@
     0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
+.modal-btn-secondary {
+  background: linear-gradient(135deg, #6b6b6b, #4a4a4a);
+  border-color: #888888;
+}
+
+.modal-btn-secondary:hover {
+  background: linear-gradient(135deg, #808080, #5a5a5a);
+  border-color: #999999;
+}
+
+.modal-btn-danger {
+  background: linear-gradient(135deg, #8b2e2e, #6b1e1e);
+  border-color: #b34545;
+}
+
+.modal-btn-danger:hover {
+  background: linear-gradient(135deg, #a33636, #7a2424);
+  border-color: #d45555;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modal-footer .modal-btn {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;

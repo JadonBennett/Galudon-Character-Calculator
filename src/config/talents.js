@@ -90,8 +90,8 @@ const CONSTITUTION_TALENTS = [
             1: [
                 {   name: "Animal Companion", 
                     description: "Companion obeys non-combat commands, has 6 health, respawns after 24 hours if killed (common animal, automaton, or magical familiar, dog-sized maximum)", 
-                    cooldown: "1 Turn",
-                    actionType: "Action", 
+                    cooldown: "Passive",
+                    actionType: "Passive",
                     link: "https://gearsofgaludonwiki.com/index.php/Constitution#Animal_Husbandry" 
                 }
             ],
@@ -112,7 +112,7 @@ const CONSTITUTION_TALENTS = [
                 },
                 {   name: "Heal Animal", 
                     description: "Your character can greatly heal hurt creatures, for example, animals, beasts and even Curses. They can heal them to maximum Hit Points once per day.", 
-                    cooldown: "1 per Day",
+                    cooldown: "Once per Day",
                     actionType: "Extended Action", 
                     link: "https://gearsofgaludonwiki.com/index.php/Constitution#Animal_Husbandry" 
                 },
@@ -238,8 +238,8 @@ const CONSTITUTION_TALENTS = [
             3: [
                 {   name: "Improvised Weapon", 
                     description: "Wielding a hammer during their work has given your character the unique ability to use it as a weapon. If your character has already specified two weapons as their preferred weapons, you may add Forge Hammer as a third. When using your Forge Hammer as your weapon, you gain a +4 to Attack Rolls. Upon a Successful Roll, roll 1d8 for Damage.", 
-                    cooldown: "1 Turn",
-                    actionType: "Action", 
+                    cooldown: "Passive",
+                    actionType: "Passive",
                     link: "https://gearsofgaludonwiki.com/index.php/Constitution#Smithing" 
                 },
                 {   name: "Smithy", 

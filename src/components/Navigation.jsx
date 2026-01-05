@@ -8,8 +8,9 @@ import { BASE_POINTS } from '../config/talents';
  * @param {Object} stats - Character stats object (for points display)
  * @param {number} extraPoints - Extra points from settings
  * @param {Function} scrollToSection - Function to scroll to a section
+ * @param {Function} resetToDefaults - Function to reset all character data
  */
-export const Navigation = ({ stats, extraPoints, scrollToSection }) => {
+export const Navigation = ({ stats, extraPoints, scrollToSection, resetToDefaults }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -73,6 +74,15 @@ export const Navigation = ({ stats, extraPoints, scrollToSection }) => {
         </div>
 
         <div className="unified-menu-divider"></div>
+        <button
+          onClick={resetToDefaults}
+          className="unified-menu-btn reset-btn-menu"
+          aria-label="Reset to default values"
+          title="Reset all skills, weapons, and settings to default values"
+        >
+          {React.createElement(ICON_MAP['AlertCircle'], { size: 18 })}
+          RESET
+        </button>
         <Link
           to="/settings"
           className={`unified-menu-tab ${currentPath === '/settings' ? 'active' : ''}`}

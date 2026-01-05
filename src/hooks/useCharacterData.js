@@ -103,6 +103,7 @@ export function useCharacterData() {
   const [wieldingFinesse, setWieldingFinesse] = useState(false);
   const [wieldingHeavy, setWieldingHeavy] = useState(false);
   const [showResetSuccess, setShowResetSuccess] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showImportSuccess, setShowImportSuccess] = useState(false);
   const [showImportError, setShowImportError] = useState(false);
   const [collapsedSections, setCollapsedSections] = useState({
@@ -246,6 +247,8 @@ export function useCharacterData() {
     // UI state
     showResetSuccess,
     setShowResetSuccess,
+    showResetConfirm,
+    setShowResetConfirm,
     showImportSuccess,
     setShowImportSuccess,
     showImportError,

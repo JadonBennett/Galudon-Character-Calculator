@@ -104,6 +104,8 @@ function GaludonCalculator() {
     setWieldingHeavy,
     showResetSuccess,
     setShowResetSuccess,
+    showResetConfirm,
+    setShowResetConfirm,
     showImportSuccess,
     setShowImportSuccess,
     showImportError,
@@ -157,7 +159,14 @@ function GaludonCalculator() {
     luminarchAbilities
   );
 
+  // Show confirmation dialog before reset
   const resetToDefaults = useCallback(() => {
+    setShowResetConfirm(true);
+  }, []);
+
+  // Actually perform the reset
+  const performReset = useCallback(() => {
+    setShowResetConfirm(false);
     setTalents(INITIAL_TALENTS);
     setExtraPoints(0);
     setVirtuoso(false);
@@ -662,7 +671,7 @@ function GaludonCalculator() {
         </header>
 
         {/* Unified Menu - Consolidated for all tabs */}
-        <Navigation stats={stats} extraPoints={extraPoints} scrollToSection={scrollToSection} />
+        <Navigation stats={stats} extraPoints={extraPoints} scrollToSection={scrollToSection} resetToDefaults={resetToDefaults} />
 
         <Routes>
           <Route path="/" element={
@@ -752,12 +761,60 @@ function GaludonCalculator() {
               setCustomGrimoireSourceLink={setCustomGrimoireSourceLink}
               customGrimoireSpells={customGrimoireSpells}
               updateCustomGrimoireSpell={updateCustomGrimoireSpell}
+              enhancedCurseEnabled={enhancedCurseEnabled}
+              setEnhancedCurseEnabled={setEnhancedCurseEnabled}
+              enhancedCurseName={enhancedCurseName}
+              setEnhancedCurseName={setEnhancedCurseName}
+              enhancedCurseSourceLink={enhancedCurseSourceLink}
+              setEnhancedCurseSourceLink={setEnhancedCurseSourceLink}
+              enhancedCurseAbilities={enhancedCurseAbilities}
+              updateEnhancedCurseAbility={updateEnhancedCurseAbility}
+              enhancedMartialEnabled={enhancedMartialEnabled}
+              setEnhancedMartialEnabled={setEnhancedMartialEnabled}
+              enhancedMartialName={enhancedMartialName}
+              setEnhancedMartialName={setEnhancedMartialName}
+              enhancedMartialSourceLink={enhancedMartialSourceLink}
+              setEnhancedMartialSourceLink={setEnhancedMartialSourceLink}
+              enhancedMartialAbilities={enhancedMartialAbilities}
+              updateEnhancedMartialAbility={updateEnhancedMartialAbility}
+              luminarchEnabled={luminarchEnabled}
+              setLuminarchEnabled={setLuminarchEnabled}
+              luminarchName={luminarchName}
+              setLuminarchName={setLuminarchName}
+              luminarchSourceLink={luminarchSourceLink}
+              setLuminarchSourceLink={setLuminarchSourceLink}
+              luminarchAbilities={luminarchAbilities}
+              updateLuminarchAbility={updateLuminarchAbility}
               resetToDefaults={resetToDefaults}
               exportCharacter={exportCharacter}
               importCharacter={importCharacter}
             />
           } />
         </Routes>
+
+        {/* Reset Confirmation Modal */}
+        {showResetConfirm && (
+          <div className="modal-overlay">
+            <div className="modal-dialog">
+              <div className="modal-header">
+                {React.createElement(ICON_MAP['AlertCircle'], { size: 28, className: 'modal-icon' })}
+                <h2>Confirm Reset</h2>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to reset all skills, weapons, and settings to default values?</p>
+                <p style={{ marginTop: '1rem', fontWeight: '600' }}>This action cannot be undone.</p>
+              </div>
+              <div className="modal-footer">
+                <button className="modal-btn modal-btn-secondary" onClick={() => setShowResetConfirm(false)}>
+                  Cancel
+                </button>
+                <button className="modal-btn modal-btn-danger" onClick={performReset}>
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Reset Success Modal */}
         {showResetSuccess && (
